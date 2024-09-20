@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cct.redmeatojbackend.user.dao.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.cct.redmeatojbackend.user.domain.entity.User">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="TINYINT"/>
+            <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
+            <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
+            <result property="userRole" column="user_role" jdbcType="TINYINT"/>
+            <result property="unionId" column="union_id" jdbcType="VARCHAR"/>
+            <result property="mpOpenId" column="mp_open_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,account,password,
+        name,gender,user_avatar,
+        user_profile,user_role,union_id,
+        mp_open_id,create_time,update_time,
+        is_delete
+    </sql>
+    <select id="getUserList" resultType="com.cct.redmeatojbackend.user.domain.entity.User">
+        select * from user
+        <where>
+            <if test="getUserListRequest.id != null">
+                and id = #{getUserListRequest.id}
+            </if>
+            <if test="getUserListRequest.name != null">
+                and name = #{getUserListRequest.name}
+            </if>
+            <if test="getUserListRequest.account != null">
+                and `account` = #{getUserListRequest.account}
+            </if>
+            <if test="getUserListRequest.gender != null">
+                and gender = #{getUserListRequest.gender}
+            </if>
+            <if test="getUserListRequest.userRole != null">
+                and user_role = #{getUserListRequest.userRole}
+            </if>
+            <if test="getUserListRequest.unionId != null">
+                and union_id = #{getUserListRequest.unionId}
+            </if>
+            <if test="getUserListRequest.updateTime != null">
+                and update_time >= #{tUserListRequest.updateTime}
+            </if>
+        </where>
+    </select>
+</mapper>
