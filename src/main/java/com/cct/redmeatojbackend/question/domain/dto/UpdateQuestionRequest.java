@@ -1,5 +1,6 @@
 package com.cct.redmeatojbackend.question.domain.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

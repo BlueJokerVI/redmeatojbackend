@@ -39,14 +39,19 @@ public class BasePageResp<T> {
 
     public static <T> BasePageResp<T> init(Page resp) {
         boolean last = isLast(resp.getCurrent(), resp.getSize(), resp.getTotal());
-        return init((int)resp.getCurrent(), (int)resp.getSize(), (int)resp.getTotal(), last , resp.getRecords());
+        return init((int) resp.getCurrent(), (int) resp.getSize(), (int) resp.getTotal(), last, resp.getRecords());
+    }
+
+    public static <T> BasePageResp<T> init(int current, int pageSize, int total, List<T> list) {
+        boolean last = isLast(current, pageSize, total);
+        return new BasePageResp<>(current, pageSize, total, last, list);
     }
 
 
-    public <R> BasePageResp<R> toVo(BasePageResp<T> basePageResp,Class<R> voClass){
+    public <R> BasePageResp<R> toVo(BasePageResp<T> basePageResp, Class<R> voClass) {
         BasePageResp<R> vo = new BasePageResp<>();
         List<T> source = basePageResp.getLists();
-        List<R> targetList = BeanUtil.copyToList(source,voClass);
+        List<R> targetList = BeanUtil.copyToList(source, voClass);
         vo.setLists(targetList);
         vo.setPageSize(getPageSize());
         vo.setIsLastPage(getIsLastPage());
@@ -57,6 +62,7 @@ public class BasePageResp<T> {
 
     /**
      * 判断是否是最后一页
+     *
      * @param current
      * @param pageSize
      * @param total

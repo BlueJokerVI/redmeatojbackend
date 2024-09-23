@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -17,11 +18,13 @@ import java.io.Serializable;
 public class BasePageReq implements Serializable {
 
     @ApiModelProperty("当前页号")
-    private int current = 1;
+    @NotNull
+    private int current;
 
 
     @ApiModelProperty("每页大小")
-    private int pageSize = 10;
+    @NotNull
+    private int pageSize;
 
 
     @ApiModelProperty("排序字段")

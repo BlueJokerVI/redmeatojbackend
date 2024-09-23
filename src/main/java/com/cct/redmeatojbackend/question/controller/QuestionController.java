@@ -1,12 +1,13 @@
 package com.cct.redmeatojbackend.question.controller;
 
+import com.cct.redmeatojbackend.common.annotation.RoleAccess;
+import com.cct.redmeatojbackend.common.domain.enums.UserRoleEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
-import com.cct.redmeatojbackend.question.domain.dto.AddQuestionRequest;
-import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionListRequest;
-import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionRequest;
-import com.cct.redmeatojbackend.question.domain.dto.UpdateQuestionRequest;
+import com.cct.redmeatojbackend.question.domain.dto.*;
 import com.cct.redmeatojbackend.question.domain.vo.QuestionVo;
+import com.cct.redmeatojbackend.question.domain.entity.TestCase;
+import com.cct.redmeatojbackend.question.service.QuestionIOService;
 import com.cct.redmeatojbackend.question.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,10 @@ public class QuestionController {
 
     @Resource
     QuestionService questionService;
+
+    @Resource
+    QuestionIOService questionIOService;
+
 
     @PostMapping("/add")
     BaseResponse<QuestionVo>  addQuestion(@Valid @RequestBody AddQuestionRequest addQuestionRequest){
@@ -48,5 +53,12 @@ public class QuestionController {
     BaseResponse<BasePageResp<QuestionVo>> searchQuestionPage(@Valid @RequestBody SearchQuestionListRequest searchQuestionListRequest){
         return questionService.searchQuestionPage(searchQuestionListRequest);
     }
+
+    @PostMapping("/getTestCasePage")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
+    BaseResponse<BasePageResp<TestCase>> getTestCasePage(@Valid @RequestBody GetTestCasePageRequest getTestCasePageRequest){
+        return questionIOService.getTestCasePage(getTestCasePageRequest);
+    }
+
 
 }

@@ -11,7 +11,7 @@ import ${field.fieldTypePath};
 <#macro lowerFirstChar modelName>${modelName?substring(0, 1)?lower_case}${modelName?substring(1)}</#macro>
 import lombok.Data;
 import java.io.Serializable;
-
+import io.swagger.annotations.ApiModel;
 /**
  * @description ${modelDesc}添加请求
  * @author ${author}

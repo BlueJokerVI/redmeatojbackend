@@ -8,6 +8,7 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="questionName" column="question_name" jdbcType="VARCHAR"/>
             <result property="questionIoExample" column="question_io_example" jdbcType="VARCHAR"/>
+            <result property="questionIoTotal" column="question_io_total" jdbcType="INTEGER"/>
             <result property="questionDesc" column="question_desc" jdbcType="VARCHAR"/>
             <result property="questionTags" column="question_tags" jdbcType="VARCHAR"/>
             <result property="questionMemLimit" column="question_mem_limit" jdbcType="INTEGER"/>
@@ -21,8 +22,9 @@
 
     <sql id="Base_Column_List">
         id,question_name,question_io_example,
-        question_desc,question_tags,question_mem_limit,
-        question_time_limit,question_submit_num,question_ac_num,
-        create_time,update_time,is_delete
+        question_io_total,question_desc,question_tags,
+        question_mem_limit,question_time_limit,question_submit_num,
+        question_ac_num,create_time,update_time,
+        is_delete
     </sql>
 </mapper>

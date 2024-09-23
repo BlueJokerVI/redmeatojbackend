@@ -37,6 +37,17 @@ public class Question implements Serializable {
     private String questionIoExample;
 
     /**
+     * 记录该题目的测试用例有多少个，同时测试用例命名规则：
+     输入文件名：x.in
+     输出文件名：x.out
+     x取值：从1开始顺序增长的正整数
+     */
+    @TableField(value = "question_io_total")
+    private Integer questionIoTotal;
+
+
+
+    /**
      * 题目描述
      */
     @TableField(value = "question_desc")

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
 <#assign printed = []>
 <#list fieldList as  field>
 <#if field.fieldTypePath?? && !(printed?seq_contains(field.fieldTypePath))>

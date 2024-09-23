@@ -19,6 +19,7 @@ import ${field.fieldTypePath};
 * @author ${author}
 */
 @ApiModel(description = "${modelDesc}分页查询请求")
+import io.swagger.annotations.ApiModel;
 @Data
 public class Search${modelName}ListRequest extends BasePageReq implements Serializable {
 

@@ -7,6 +7,7 @@ import java.io.Serializable;
 <#list fieldList as  field>
 <#if field.fieldTypePath?? && !(printed?seq_contains(field.fieldTypePath))>
 import ${field.fieldTypePath};
+import io.swagger.annotations.ApiModel;
 <#assign printed += [field.fieldTypePath]>
 </#if>
 </#list>

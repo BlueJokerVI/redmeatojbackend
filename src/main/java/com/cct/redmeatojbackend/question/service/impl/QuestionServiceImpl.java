@@ -3,11 +3,13 @@ package com.cct.redmeatojbackend.question.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
+import com.cct.redmeatojbackend.common.exception.BusinessException;
 import com.cct.redmeatojbackend.common.utils.RespUtils;
 import com.cct.redmeatojbackend.common.utils.ThrowUtils;
 import com.cct.redmeatojbackend.question.dao.QuestionDao;
@@ -17,17 +19,23 @@ import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionListRequest;
 import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.dto.UpdateQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
+import com.cct.redmeatojbackend.question.domain.entity.TestCase;
 import com.cct.redmeatojbackend.question.domain.vo.QuestionVo;
+import com.cct.redmeatojbackend.question.service.QuestionIOService;
 import com.cct.redmeatojbackend.question.service.QuestionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+
 /**
- * @description 题目表服务层实现类
  * @author cct
+ * @description 题目表服务层实现类
  */
 @Service
+@Slf4j
 public class QuestionServiceImpl implements QuestionService {
 
     @Resource
@@ -36,14 +44,26 @@ public class QuestionServiceImpl implements QuestionService {
     @Resource
     private QuestionMapper questionMapper;
 
+    @Resource
+    private QuestionIOService questionIOService;
+
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public BaseResponse<QuestionVo> addQuestion(AddQuestionRequest addQuestionRequest) {
         Question question = addQuestionRequest.toQuestion();
         question.setId(IdUtil.getSnowflakeNextId());
         ThrowUtils.throwIf(!questionDao.save(question), RespCodeEnum.OPERATION_ERROR, "添加题目失败");
         //将输入输出样例添加到改题目的判题用例
-        String questionIoExample = question.getQuestionIoExample();
-
+        try {
+            String questionIoExample = question.getQuestionIoExample();
+            List<TestCase> testCases = JSONUtil.toList(questionIoExample, TestCase.class);
+            for (TestCase testCase : testCases) {
+                questionIOService.upLoadQuestionIOFile(question.getId(), testCase);
+            }
+        }catch (Exception e){
+            log.error("添加题目时，上传输入输出样例失败", e);
+            throw new BusinessException(RespCodeEnum.OPERATION_ERROR,"添加题目时，上传输入输出样例失败");
+        }
         return RespUtils.success(QuestionVo.toVo(question));
     }
 
@@ -74,20 +94,22 @@ public class QuestionServiceImpl implements QuestionService {
     public BaseResponse<BasePageResp<QuestionVo>> searchQuestionPage(SearchQuestionListRequest searchQuestionListRequest) {
         LambdaQueryWrapper<Question> wrapper = new LambdaQueryWrapper<>();
         wrapper.select()
-               .eq(searchQuestionListRequest.getId() != null, Question::getId, searchQuestionListRequest.getId())
-               .eq(searchQuestionListRequest.getQuestionName() != null, Question::getQuestionName, searchQuestionListRequest.getQuestionName())
-               .eq(searchQuestionListRequest.getQuestionIoExample() != null, Question::getQuestionIoExample, searchQuestionListRequest.getQuestionIoExample())
-               .eq(searchQuestionListRequest.getQuestionDesc() != null, Question::getQuestionDesc, searchQuestionListRequest.getQuestionDesc())
-               .eq(searchQuestionListRequest.getQuestionTags() != null, Question::getQuestionTags, searchQuestionListRequest.getQuestionTags())
-               .eq(searchQuestionListRequest.getQuestionMemLimit() != null, Question::getQuestionMemLimit, searchQuestionListRequest.getQuestionMemLimit())
-               .eq(searchQuestionListRequest.getQuestionTimeLimit() != null, Question::getQuestionTimeLimit, searchQuestionListRequest.getQuestionTimeLimit())
-               .eq(searchQuestionListRequest.getQuestionSubmitNum() != null, Question::getQuestionSubmitNum, searchQuestionListRequest.getQuestionSubmitNum())
-               .eq(searchQuestionListRequest.getQuestionAcNum() != null, Question::getQuestionAcNum, searchQuestionListRequest.getQuestionAcNum())
-               .eq(searchQuestionListRequest.getCreateTime() != null, Question::getCreateTime, searchQuestionListRequest.getCreateTime())
-               .eq(searchQuestionListRequest.getUpdateTime() != null, Question::getUpdateTime, searchQuestionListRequest.getUpdateTime())
-               .eq(searchQuestionListRequest.getIsDelete() != null, Question::getIsDelete, searchQuestionListRequest.getIsDelete());
+                .eq(searchQuestionListRequest.getId() != null, Question::getId, searchQuestionListRequest.getId())
+                .eq(searchQuestionListRequest.getQuestionName() != null, Question::getQuestionName, searchQuestionListRequest.getQuestionName())
+                .eq(searchQuestionListRequest.getQuestionIoExample() != null, Question::getQuestionIoExample, searchQuestionListRequest.getQuestionIoExample())
+                .eq(searchQuestionListRequest.getQuestionDesc() != null, Question::getQuestionDesc, searchQuestionListRequest.getQuestionDesc())
+                .eq(searchQuestionListRequest.getQuestionTags() != null, Question::getQuestionTags, searchQuestionListRequest.getQuestionTags())
+                .eq(searchQuestionListRequest.getQuestionMemLimit() != null, Question::getQuestionMemLimit, searchQuestionListRequest.getQuestionMemLimit())
+                .eq(searchQuestionListRequest.getQuestionTimeLimit() != null, Question::getQuestionTimeLimit, searchQuestionListRequest.getQuestionTimeLimit())
+                .eq(searchQuestionListRequest.getQuestionSubmitNum() != null, Question::getQuestionSubmitNum, searchQuestionListRequest.getQuestionSubmitNum())
+                .eq(searchQuestionListRequest.getQuestionAcNum() != null, Question::getQuestionAcNum, searchQuestionListRequest.getQuestionAcNum())
+                .eq(searchQuestionListRequest.getCreateTime() != null, Question::getCreateTime, searchQuestionListRequest.getCreateTime())
+                .eq(searchQuestionListRequest.getUpdateTime() != null, Question::getUpdateTime, searchQuestionListRequest.getUpdateTime())
+                .eq(searchQuestionListRequest.getIsDelete() != null, Question::getIsDelete, searchQuestionListRequest.getIsDelete());
         Page<Question> questionPage = questionMapper.selectPage(searchQuestionListRequest.plusPage(), wrapper);
         BasePageResp<Question> basePageResp = BasePageResp.init(questionPage);
         return RespUtils.success(basePageResp.toVo(basePageResp, QuestionVo.class));
     }
+
+
 }

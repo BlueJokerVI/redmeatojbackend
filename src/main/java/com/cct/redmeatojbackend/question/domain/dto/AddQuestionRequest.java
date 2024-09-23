@@ -30,6 +30,18 @@ public class AddQuestionRequest implements Serializable {
     @Size(max = 255, message = "长度请在要求范围内")
     private String questionIoExample;
 
+
+    /**
+     * 记录该题目的测试用例有多少个，同时测试用例命名规则：
+     * 输入文件名：x.in
+     * 输出文件名：x.out
+     * x取值：从1开始顺序增长的正整数
+     */
+    @ApiModelProperty("题目输入输出样例数量")
+    @Min(value = 1, message = "样例数量不能小于1")
+    private Integer questionIoTotal;
+
+
     @ApiModelProperty("题目描述")
     @NotBlank
     @Size(max = 8192, message = "长度请在要求范围内")

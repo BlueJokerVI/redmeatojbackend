@@ -1,6 +1,7 @@
 package com.cct.redmeatojbackend.question.domain.dto;
 import cn.hutool.core.bean.BeanUtil;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import java.io.Serializable;
 import java.lang.Long;

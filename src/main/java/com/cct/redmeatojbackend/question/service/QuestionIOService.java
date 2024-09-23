@@ -1,5 +1,10 @@
 package com.cct.redmeatojbackend.question.service;
 
+import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
+import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
+import com.cct.redmeatojbackend.question.domain.dto.GetTestCasePageRequest;
+import com.cct.redmeatojbackend.question.domain.entity.TestCase;
+
 /**
  * @BelongsProject: redmeatojbackend
  * @Author: cct
@@ -8,5 +13,20 @@ package com.cct.redmeatojbackend.question.service;
  */
 public interface QuestionIOService {
 
-    boolean upLoadQuestionIOFile(Long questionId);
+
+    /**
+     * 上传问题输入输出判题用例
+     * @param questionId
+     * @param testCase
+     * @return
+     */
+    boolean upLoadQuestionIOFile(Long questionId,TestCase testCase);
+
+
+    /**
+     * 分页获取题目测试用例
+     * @param getTestCasePageRequest
+     * @return
+     */
+    BaseResponse<BasePageResp<TestCase>> getTestCasePage(GetTestCasePageRequest getTestCasePageRequest);
 }

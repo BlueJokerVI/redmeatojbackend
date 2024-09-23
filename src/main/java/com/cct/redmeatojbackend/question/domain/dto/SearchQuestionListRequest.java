@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cct.redmeatojbackend.common.domain.dto.BasePageReq;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import java.io.Serializable;
 import java.lang.Long;

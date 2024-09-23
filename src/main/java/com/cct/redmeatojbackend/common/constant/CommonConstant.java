@@ -25,4 +25,6 @@ public interface CommonConstant {
      * 请求头中cookie内SESSION
      */
     String SESSION= "SESSION";
+
+
 }
