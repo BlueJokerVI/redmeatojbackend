@@ -1,18 +1,20 @@
 package com.cct.redmeatojbackend.question.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.baomidou.mybatisplus.extension.handlers.GsonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 
 /**
  * 
  * @TableName question
  */
-@TableName(value ="question")
+@TableName(value ="question",autoResultMap = true)
 @Data
 public class Question implements Serializable {
     /**
@@ -29,12 +31,11 @@ public class Question implements Serializable {
 
     /**
      * 输入输出样例{
-  "input":"",
-  "output":""
-}
+    "input":"",
+    "output":""}
      */
-    @TableField(value = "question_io_example")
-    private String questionIoExample;
+    @TableField(value = "question_io_example",typeHandler = JacksonTypeHandler.class)
+    private List<TestCase> questionIoExample;
 
     /**
      * 记录该题目的测试用例有多少个，同时测试用例命名规则：
@@ -56,8 +57,8 @@ public class Question implements Serializable {
     /**
      * 题目标签  如：["数学","二叉树"]
      */
-    @TableField(value = "question_tags")
-    private String questionTags;
+    @TableField(value = "question_tags",typeHandler = JacksonTypeHandler.class)
+    private List<String> questionTags;
 
     /**
      * 题目解法内存限制，单位kb
@@ -99,6 +100,7 @@ public class Question implements Serializable {
      * 是否删除
      */
     @TableField(value = "is_delete")
+    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

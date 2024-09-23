@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cct.redmeatojbackend.common.domain.dto.BasePageReq;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.io.Serializable;
 import java.lang.Long;
 import java.lang.String;
-import java.lang.Integer;
-import java.util.Date;
+
 /**
 * @description 题目表分页查询请求
 * @author cct
@@ -19,31 +19,15 @@ import java.util.Date;
 @Data
 public class SearchQuestionListRequest extends BasePageReq implements Serializable {
 
-    
-    private Long id;
-    
-    private String questionName;
-    
-    private String questionIoExample;
-    
-    private String questionDesc;
-    
-    private String questionTags;
-    
-    private Integer questionMemLimit;
-    
-    private Integer questionTimeLimit;
-    
-    private Integer questionSubmitNum;
-    
-    private Integer questionAcNum;
-    
-    private Date createTime;
-    
-    private Date updateTime;
-    
-    private Integer isDelete;
 
+    @ApiModelProperty(value = "题目id")
+    private Long id;
+
+    @ApiModelProperty(value = "题目名称")
+    private String questionName;
+
+    @ApiModelProperty(value = "题目描述")
+    private String questionTags;
 
     public Question toQuestion(){
         Question question = new Question();

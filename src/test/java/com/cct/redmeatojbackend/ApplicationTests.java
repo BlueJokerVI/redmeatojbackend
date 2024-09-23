@@ -4,6 +4,9 @@ package com.cct.redmeatojbackend;
 import cn.hutool.core.io.FileUtil;
 import com.cct.redmeatojbackend.common.constant.OssConstant;
 import com.cct.redmeatojbackend.oss.MinIOTemplate;
+import com.cct.redmeatojbackend.question.dao.QuestionDao;
+import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionRequest;
+import com.cct.redmeatojbackend.question.domain.entity.Question;
 import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.Item;
@@ -23,6 +26,9 @@ class ApplicationTests {
 
     @Resource
     private MinIOTemplate minIOTemplate;
+
+    @Resource
+    private QuestionDao questionDao;
 
     @Test
     void test() {
@@ -118,5 +124,13 @@ class ApplicationTests {
         System.out.println();
     }
 
+
+    @Test
+    void test3(){
+        SearchQuestionRequest searchQuestionRequest = new SearchQuestionRequest();
+        searchQuestionRequest.setId(1838153384592003072L);
+        Question question = questionDao.searchQuestion(searchQuestionRequest);
+        System.out.println();
+    }
 
 }

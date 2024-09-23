@@ -2,6 +2,7 @@ package com.cct.redmeatojbackend.question.domain.dto;
 import cn.hutool.core.bean.BeanUtil;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.io.Serializable;
 import java.lang.Long;
@@ -15,30 +16,15 @@ import java.util.Date;
 @ApiModel(description = "题目表查询请求")
 @Data
 public class SearchQuestionRequest implements Serializable {
-    
+
+    @ApiModelProperty(value = "题目id")
     private Long id;
-    
+
+    @ApiModelProperty(value = "题目名称")
     private String questionName;
-    
-    private String questionIoExample;
-    
-    private String questionDesc;
-    
+
+    @ApiModelProperty(value = "题目描述")
     private String questionTags;
-    
-    private Integer questionMemLimit;
-    
-    private Integer questionTimeLimit;
-    
-    private Integer questionSubmitNum;
-    
-    private Integer questionAcNum;
-    
-    private Date createTime;
-    
-    private Date updateTime;
-    
-    private Integer isDelete;
 
     public Question toQuestion(){
         Question question = new Question();

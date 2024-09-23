@@ -59,7 +59,7 @@ public class ${modelName}ServiceImpl implements ${modelName}Service {
         ${modelName} old${modelName} = <@lowerFirstChar modelName = modelName />Dao.getById(update${modelName}Request);
         ThrowUtils.throwIf(old${modelName} == null, RespCodeEnum.OPERATION_ERROR, "${modelDesc?substring(0, modelDesc?length - 1)}不存在");
         BeanUtil.copyProperties(update${modelName}Request, old${modelName}, CopyOptions.create().setIgnoreNullValue(true));
-        ThrowUtils.throwIf(<@lowerFirstChar modelName = modelName />Dao.save(old${modelName}), RespCodeEnum.OPERATION_ERROR, "更新${modelDesc?substring(0, modelDesc?length - 1)}失败");
+        ThrowUtils.throwIf(!<@lowerFirstChar modelName = modelName />Dao.updateById(old${modelName}), RespCodeEnum.OPERATION_ERROR, "更新${modelDesc?substring(0, modelDesc?length - 1)}失败");
         return RespUtils.success(${modelName}Vo.toVo(old${modelName}));
     }
 

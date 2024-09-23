@@ -85,6 +85,30 @@ public class MinIOTemplate {
     }
 
     /**
+     * 删除一个目录。
+     *
+     * @param bucketName 桶名
+     */
+    @SneakyThrows(Exception.class)
+    public void removeDir(String bucketName, String directoryPrefix) {
+        // 列出目录下的所有对象并删除
+        Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder()
+                .bucket(bucketName)
+                .prefix(directoryPrefix)
+                .recursive(true)
+                .build());
+
+        for (Result<Item> result : results) {
+            Item item = result.get();
+            minioClient.removeObject(RemoveObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(item.objectName())
+                    .build());
+        }
+    }
+
+
+    /**
      * 返回临时带签名、过期时间一天、PUT请求方式的访问URL
      */
     @SneakyThrows(Exception.class)
@@ -154,7 +178,7 @@ public class MinIOTemplate {
     @SneakyThrows(Exception.class)
     public void putObjectWithString(String bucketName, String ossFilePath, String context) {
 
-        ThrowUtils.throwIf(StrUtil.isEmpty(context), RespCodeEnum.PARAMS_ERROR,"上传内容不能为空");
+        ThrowUtils.throwIf(StrUtil.isEmpty(context), RespCodeEnum.PARAMS_ERROR, "上传内容不能为空");
 
         byte[] bytes = context.getBytes(StandardCharsets.UTF_8);
         int byteLen = bytes.length;

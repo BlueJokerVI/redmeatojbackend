@@ -29,4 +29,10 @@ public interface QuestionIOService {
      * @return
      */
     BaseResponse<BasePageResp<TestCase>> getTestCasePage(GetTestCasePageRequest getTestCasePageRequest);
+
+    /**
+     * 删除题目测试用例
+     * @param questionId
+     */
+    void deleteTestCase(Long questionId);
 }

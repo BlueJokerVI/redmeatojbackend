@@ -96,6 +96,12 @@ public class QuestionIOServiceImpl implements QuestionIOService {
         return RespUtils.success(testCaseVoBasePageResp);
     }
 
+    @Override
+    public void deleteTestCase(Long questionId) {
+        String questionDir = OssConstant.QUESTION_IO_PREFIX_PATH + questionId + "/";
+        minIOTemplate.removeDir(OssConstant.OSS_BUCKET,questionDir);
+    }
+
     /**
      * 获取测试用例内容
      *

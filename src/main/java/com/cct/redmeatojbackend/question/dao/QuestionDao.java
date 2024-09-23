@@ -18,17 +18,12 @@ public class QuestionDao extends ServiceImpl<QuestionMapper, Question> {
         return lambdaQuery().select()
                             .eq(searchQuestionRequest.getId() != null, Question::getId, searchQuestionRequest.getId())
                             .eq(searchQuestionRequest.getQuestionName() != null, Question::getQuestionName, searchQuestionRequest.getQuestionName())
-                            .eq(searchQuestionRequest.getQuestionIoExample() != null, Question::getQuestionIoExample, searchQuestionRequest.getQuestionIoExample())
-                            .eq(searchQuestionRequest.getQuestionDesc() != null, Question::getQuestionDesc, searchQuestionRequest.getQuestionDesc())
-                            .eq(searchQuestionRequest.getQuestionTags() != null, Question::getQuestionTags, searchQuestionRequest.getQuestionTags())
-                            .eq(searchQuestionRequest.getQuestionMemLimit() != null, Question::getQuestionMemLimit, searchQuestionRequest.getQuestionMemLimit())
-                            .eq(searchQuestionRequest.getQuestionTimeLimit() != null, Question::getQuestionTimeLimit, searchQuestionRequest.getQuestionTimeLimit())
-                            .eq(searchQuestionRequest.getQuestionSubmitNum() != null, Question::getQuestionSubmitNum, searchQuestionRequest.getQuestionSubmitNum())
-                            .eq(searchQuestionRequest.getQuestionAcNum() != null, Question::getQuestionAcNum, searchQuestionRequest.getQuestionAcNum())
-                            .eq(searchQuestionRequest.getCreateTime() != null, Question::getCreateTime, searchQuestionRequest.getCreateTime())
-                            .eq(searchQuestionRequest.getUpdateTime() != null, Question::getUpdateTime, searchQuestionRequest.getUpdateTime())
-                            .eq(searchQuestionRequest.getIsDelete() != null, Question::getIsDelete, searchQuestionRequest.getIsDelete())
+                            .like(searchQuestionRequest.getQuestionTags() != null, Question::getQuestionTags, searchQuestionRequest.getQuestionTags())
                             .last("limit 1").one();
+    }
+
+    public Question searchQuestionByName(String questionName) {
+        return lambdaQuery().eq(Question::getQuestionName, questionName).one();
     }
 }
 

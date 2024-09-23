@@ -30,16 +30,19 @@ public class QuestionController {
 
 
     @PostMapping("/add")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
     BaseResponse<QuestionVo>  addQuestion(@Valid @RequestBody AddQuestionRequest addQuestionRequest){
         return questionService.addQuestion(addQuestionRequest);
     }
 
     @GetMapping("/delete")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
     BaseResponse<Void>  deleteQuestion(@Valid @NotNull @RequestParam Long questionId){
         return questionService.deleteQuestion(questionId);
     }
 
     @PostMapping("/update")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
     BaseResponse<QuestionVo>  updateQuestion(@Valid @RequestBody UpdateQuestionRequest updateQuestionRequest){
         return questionService.updateQuestion(updateQuestionRequest);
     }

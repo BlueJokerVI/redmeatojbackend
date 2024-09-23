@@ -2,6 +2,7 @@ package com.cct.redmeatojbackend.question.domain.dto;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
+import com.cct.redmeatojbackend.question.domain.entity.TestCase;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author cct
@@ -26,9 +28,8 @@ public class AddQuestionRequest implements Serializable {
     private String questionName;
 
     @ApiModelProperty("题目输入输出样例")
-    @NotBlank
-    @Size(max = 255, message = "长度请在要求范围内")
-    private String questionIoExample;
+    @Size(min = 1,max = 3,message = "长度请在要求范围内")
+    private List<TestCase> questionIoExample;
 
 
     /**
@@ -48,9 +49,8 @@ public class AddQuestionRequest implements Serializable {
     private String questionDesc;
 
     @ApiModelProperty("题目标签")
-    @NotBlank
-    @Size(max = 1024, message = "长度请在要求范围内")
-    private String questionTags;
+    @Size(min = 1, message = "长度请在要求范围内")
+    private List<String> questionTags;
 
     @ApiModelProperty("题目运行时内存限制，单位ms")
     @NotNull
