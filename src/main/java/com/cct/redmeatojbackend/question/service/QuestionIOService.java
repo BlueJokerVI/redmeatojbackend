@@ -35,4 +35,11 @@ public interface QuestionIOService {
      * @param questionId
      */
     void deleteTestCase(Long questionId);
+
+    /**
+     * 删除指定测试用例
+     * @param questionId
+     * @param testCaseId
+     */
+    void deleteTestCase(Long questionId,Integer testCaseId);
 }

@@ -59,7 +59,7 @@ public class UserController {
     }
 
 
-    @ApiOperation("用户登入")
+    @ApiOperation("用户登录")
     @PostMapping("/login")
     BaseResponse<UserVo> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpServletResponse httpServletResponse) {
         User user = userService.login(userLoginRequest.getAccount(), userLoginRequest.getPassword());

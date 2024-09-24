@@ -25,13 +25,13 @@ public class Generator {
 
 
         DataModel dataModel = new DataModel();
-        dataModel.setModelName("Question");
+        dataModel.setModelName("SubmitRecord");
         dataModel.setAuthor("cct");
-        dataModel.setModelDesc("题目表");
+        dataModel.setModelDesc("提交记录表");
         dataModel.setModuleClassPath("com.cct.redmeatojbackend.question");
         dataModel.setProjectPath("com.cct.redmeatojbackend");
         String inputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\resources\\templates";
-        String outputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\java\\com\\cct\\redmeatojbackend\\" + dataModel.getModelName().toLowerCase();
+        String outputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\java\\com\\cct\\redmeatojbackend\\question";
 
 
         Class<Question> Clazz = Question.class;

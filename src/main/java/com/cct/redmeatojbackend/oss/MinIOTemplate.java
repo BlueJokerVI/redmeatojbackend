@@ -107,6 +107,17 @@ public class MinIOTemplate {
         }
     }
 
+    /**
+     * 删除某文件对象
+     *
+     * @param ossBucket
+     * @param filePath
+     */
+    @SneakyThrows(Exception.class)
+    public void removeFile(String ossBucket, String filePath) {
+        minioClient.removeObject(RemoveObjectArgs.builder().bucket(ossBucket).object(filePath).build());
+    }
+
 
     /**
      * 返回临时带签名、过期时间一天、PUT请求方式的访问URL

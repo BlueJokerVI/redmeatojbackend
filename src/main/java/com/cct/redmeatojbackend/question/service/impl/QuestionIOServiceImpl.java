@@ -99,7 +99,15 @@ public class QuestionIOServiceImpl implements QuestionIOService {
     @Override
     public void deleteTestCase(Long questionId) {
         String questionDir = OssConstant.QUESTION_IO_PREFIX_PATH + questionId + "/";
-        minIOTemplate.removeDir(OssConstant.OSS_BUCKET,questionDir);
+        minIOTemplate.removeDir(OssConstant.OSS_BUCKET, questionDir);
+    }
+
+    @Override
+    public void deleteTestCase(Long questionId, Integer testCaseId) {
+        String testCaseInputPath = OssConstant.QUESTION_IO_PREFIX_PATH + questionId + "/" + testCaseId + "." + OssConstant.TEST_CASE_INPUT_SUFFIX_NAME;
+        String testCaseOutputPath = OssConstant.QUESTION_IO_PREFIX_PATH + questionId + "/" + testCaseId + "." + OssConstant.TEST_CASE_OUTPUT_SUFFIX_NAME;
+        minIOTemplate.removeFile(OssConstant.OSS_BUCKET, testCaseInputPath);
+        minIOTemplate.removeFile(OssConstant.OSS_BUCKET, testCaseOutputPath);
     }
 
     /**
