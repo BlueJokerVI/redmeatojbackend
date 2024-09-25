@@ -12,10 +12,10 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AllowAccessWithNotLogin {
+public @interface Login {
     /**
      * 标记未登入是否允许请求接口
      * @return
      */
-    boolean allow() default false;
+    boolean allow() default true;
 }

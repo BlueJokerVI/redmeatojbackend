@@ -2,6 +2,7 @@ package com.cct.redmeatojbackend;
 
 
 import cn.hutool.core.io.FileUtil;
+import com.cct.redmeatojbackend.coderunbox.service.RunCodeServiceManagerChain;
 import com.cct.redmeatojbackend.common.constant.OssConstant;
 import com.cct.redmeatojbackend.oss.MinIOTemplate;
 import com.cct.redmeatojbackend.question.dao.QuestionDao;
@@ -29,6 +30,9 @@ class ApplicationTests {
 
     @Resource
     private QuestionDao questionDao;
+
+    @Resource
+    private RunCodeServiceManagerChain runCodeServiceManagerChain;
 
     @Test
     void test() {
@@ -131,6 +135,11 @@ class ApplicationTests {
         searchQuestionRequest.setId(1838153384592003072L);
         Question question = questionDao.searchQuestion(searchQuestionRequest);
         System.out.println();
+    }
+
+    @Test
+    void test4(){
+        System.out.println(runCodeServiceManagerChain);
     }
 
 }

@@ -18,7 +18,7 @@ public class SubmitRecord implements Serializable {
     /**
      * 提交记录id
      */
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -34,6 +34,13 @@ public class SubmitRecord implements Serializable {
     private Long userId;
 
     /**
+     * 提交语言
+     */
+    @TableField(value = "language")
+    private String language;
+
+
+    /**
      * 提交内容
      */
     @TableField(value = "submit_context")
@@ -44,6 +51,12 @@ public class SubmitRecord implements Serializable {
      */
     @TableField(value = "judge_result")
     private Integer judgeResult;
+
+    /**
+     * 代码运行的最后测试用例
+     */
+    @TableField(value = "last_run_case")
+    private Integer lastRunCase;
 
     /**
      * 代码运行时间，单位毫秒

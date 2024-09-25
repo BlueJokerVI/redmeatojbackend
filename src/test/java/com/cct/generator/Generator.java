@@ -3,6 +3,7 @@ package com.cct.generator;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileWriter;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
+import com.cct.redmeatojbackend.question.domain.entity.SubmitRecord;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -26,6 +27,7 @@ public class Generator {
 
         DataModel dataModel = new DataModel();
         dataModel.setModelName("SubmitRecord");
+        Class<SubmitRecord> Clazz = SubmitRecord.class;
         dataModel.setAuthor("cct");
         dataModel.setModelDesc("提交记录表");
         dataModel.setModuleClassPath("com.cct.redmeatojbackend.question");
@@ -33,8 +35,6 @@ public class Generator {
         String inputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\resources\\templates";
         String outputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\java\\com\\cct\\redmeatojbackend\\question";
 
-
-        Class<Question> Clazz = Question.class;
         Field[] fields = Clazz.getDeclaredFields();
         List<DataModel.Field> fieldArrayList = new ArrayList<>();
         for (Field field : fields) {

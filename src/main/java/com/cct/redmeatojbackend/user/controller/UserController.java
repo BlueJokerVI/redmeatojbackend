@@ -1,7 +1,7 @@
 package com.cct.redmeatojbackend.user.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cct.redmeatojbackend.common.annotation.AllowAccessWithNotLogin;
+import com.cct.redmeatojbackend.common.annotation.Login;
 import com.cct.redmeatojbackend.common.annotation.RoleAccess;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
 import com.cct.redmeatojbackend.common.domain.enums.UserRoleEnum;
@@ -72,7 +72,7 @@ public class UserController {
 
     @ApiOperation("自定义用户信息")
     @PostMapping("/customUserInfo")
-    @AllowAccessWithNotLogin
+    @Login
     BaseResponse<UserVo> customUserInfo(@Valid @RequestBody CustomUserInfoRequest customUserInfoRequest) {
         User user = userService.customUserInfo(customUserInfoRequest);
         return RespUtils.success(UserVo.getVo(user));
@@ -91,7 +91,7 @@ public class UserController {
 
     @ApiOperation("获取上传图片地址")
     @PostMapping("/getOssUrl")
-    @AllowAccessWithNotLogin
+    @Login
     BaseResponse<OssResponse> getOssUrl(@Valid @RequestBody OssRequest ossRequest) {
         OssResponse preSignedObjectUrl = minioTemplate.getPreSignedObjectUrl(ossRequest);
         return RespUtils.success(preSignedObjectUrl);
@@ -123,7 +123,7 @@ public class UserController {
 
     @ApiOperation("测试")
     @GetMapping("/test")
-    @AllowAccessWithNotLogin
+    @Login
     BaseResponse<String> test() {
         return RespUtils.success("test");
     }

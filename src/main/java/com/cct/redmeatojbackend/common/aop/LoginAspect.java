@@ -1,6 +1,6 @@
 package com.cct.redmeatojbackend.common.aop;
 
-import com.cct.redmeatojbackend.common.annotation.AllowAccessWithNotLogin;
+import com.cct.redmeatojbackend.common.annotation.Login;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
 import com.cct.redmeatojbackend.common.utils.ThrowUtils;
 import com.cct.redmeatojbackend.user.domain.vo.UserVo;
@@ -19,15 +19,15 @@ import javax.annotation.Resource;
  */
 @Aspect
 @Component
-public class AccessWithNotLoginAspect {
+public class LoginAspect {
 
     @Resource
     private UserService userService;
 
 
-    @Around("@annotation(allowAccessWithNotLogin)")
-    public Object accessWithNotLogin(ProceedingJoinPoint joinPoint, AllowAccessWithNotLogin allowAccessWithNotLogin) throws Throwable {
-        boolean allow = allowAccessWithNotLogin.allow();
+    @Around("@annotation(login)")
+    public Object login(ProceedingJoinPoint joinPoint, Login login) throws Throwable {
+        boolean allow = login.allow();
         if (!allow) {
             UserVo currentUser = userService.getCurrentUser();
             ThrowUtils.throwIf(currentUser == null, RespCodeEnum.NOT_LOGIN_ERROR);

@@ -6,6 +6,7 @@ import ${projectPath}.common.domain.dto.BasePageReq;
 import ${moduleClassPath}.domain.entity.${modelName};
 import lombok.Data;
 import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
 <#assign printed = []>
 <#list fieldList as  field>
 <#if field.fieldTypePath?? && !(printed?seq_contains(field.fieldTypePath))>
@@ -19,7 +20,6 @@ import ${field.fieldTypePath};
 * @author ${author}
 */
 @ApiModel(description = "${modelDesc}分页查询请求")
-import io.swagger.annotations.ApiModel;
 @Data
 public class Search${modelName}ListRequest extends BasePageReq implements Serializable {
 

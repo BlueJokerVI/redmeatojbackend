@@ -110,6 +110,41 @@ public class QuestionIOServiceImpl implements QuestionIOService {
         minIOTemplate.removeFile(OssConstant.OSS_BUCKET, testCaseOutputPath);
     }
 
+    @Override
+    public List<TestCase> getTestCasesByQuestionId(Long questionId) {
+
+        //questionPrefixPath一定要以"/"结尾指定某个文件夹，如/xxx/aaa/bbb/
+        //  /xxx/aaa/bbb 等价与 /xxx/aaa/
+        String questionPrefixPath = OssConstant.QUESTION_IO_PREFIX_PATH + questionId + "/";
+
+        Iterable<Result<Item>> results = minIOTemplate.listObjects(OssConstant.OSS_BUCKET, questionPrefixPath, true);
+
+        //<文件前缀名，TestCaseVo>
+        Map<String, TestCase> mp = new HashMap<>();
+        //获取问题对应存在的所有IO测试用例
+        for (Result<Item> itemResult : results) {
+            Item item;
+            try {
+                item = itemResult.get();
+            } catch (Exception e) {
+                throw new BusinessException(RespCodeEnum.SYSTEM_ERROR, "获取测试用例失败！");
+            }
+            String fileName = FileUtil.getName(item.objectName());
+            String fileSuffix = FileUtil.getSuffix(fileName);
+            String filePrefix = FileUtil.getPrefix(fileName);
+            TestCase testCase = mp.get(filePrefix);
+            if (testCase == null) {
+                testCase = new TestCase();
+                getFileContext(item, fileSuffix, testCase);
+                testCase.setTestCaseId(Integer.parseInt(filePrefix));
+                mp.put(filePrefix, testCase);
+            } else {
+                getFileContext(item, fileSuffix, testCase);
+            }
+        }
+        return new ArrayList<>(mp.values());
+    }
+
     /**
      * 获取测试用例内容
      *

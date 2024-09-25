@@ -10,6 +10,7 @@ import ${moduleClassPath}.domain.vo.${modelName}Vo;
 import ${moduleClassPath}.service.${modelName}Service;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

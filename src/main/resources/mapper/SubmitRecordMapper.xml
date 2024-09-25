@@ -9,15 +9,17 @@
             <result property="questionId" column="question_id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="BIGINT"/>
             <result property="submitContext" column="submit_context" jdbcType="VARCHAR"/>
+            <result property="language" column="language" jdbcType="VARCHAR"/>
             <result property="judgeResult" column="judge_result" jdbcType="TINYINT"/>
+            <result property="lastRunCase" column="last_run_case" jdbcType="INTEGER"/>
             <result property="timeConsume" column="time_consume" jdbcType="INTEGER"/>
             <result property="memoryConsume" column="memory_consume" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,question_id,user_id,
-        submit_context,judge_result,time_consume,
+        id,question_id,user_id,language,
+        submit_context,judge_result,last_run_case,time_consume,
         memory_consume,create_time
     </sql>
 </mapper>

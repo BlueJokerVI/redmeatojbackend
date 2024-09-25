@@ -24,4 +24,14 @@ public class RunCodeResp {
      * 运行结果描述
      */
     String result;
+
+    /**
+     * 运行时间 单位ms
+     */
+    Integer timeConsume;
+
+    /**
+     * 运行内存 单位kb
+     */
+    Integer memoryConsume;
 }

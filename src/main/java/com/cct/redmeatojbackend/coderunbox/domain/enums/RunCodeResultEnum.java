@@ -23,7 +23,7 @@ public enum RunCodeResultEnum {
     RUNTIME_ERROR(4,"运行时错误"),
     COMPILE_ERROR(5,"编译错误");
 
-    private final int value;
+    private final Integer value;
     private final String desc;
 
 }

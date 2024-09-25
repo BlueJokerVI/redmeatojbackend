@@ -5,6 +5,8 @@ import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
 import com.cct.redmeatojbackend.question.domain.dto.GetTestCasePageRequest;
 import com.cct.redmeatojbackend.question.domain.entity.TestCase;
 
+import java.util.List;
+
 /**
  * @BelongsProject: redmeatojbackend
  * @Author: cct
@@ -42,4 +44,11 @@ public interface QuestionIOService {
      * @param testCaseId
      */
     void deleteTestCase(Long questionId,Integer testCaseId);
+
+    /**
+     * 根据题目id获取改题目所有测试用例
+     * @param questionId
+     * @return
+     */
+    List<TestCase> getTestCasesByQuestionId(Long questionId);
 }

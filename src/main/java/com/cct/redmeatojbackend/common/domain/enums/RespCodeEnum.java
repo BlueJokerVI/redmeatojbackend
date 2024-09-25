@@ -26,7 +26,7 @@ public enum RespCodeEnum {
     /**
      * 状态码
      */
-    private final int code;
+    private final Integer code;
 
     /**
      * 信息
