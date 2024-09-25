@@ -2,7 +2,10 @@ package com.cct.redmeatojbackend.question.service;
 
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
-import com.cct.redmeatojbackend.question.domain.dto.*;
+import com.cct.redmeatojbackend.question.domain.dto.question.AddQuestionRequest;
+import com.cct.redmeatojbackend.question.domain.dto.question.SearchQuestionListRequest;
+import com.cct.redmeatojbackend.question.domain.dto.question.SearchQuestionRequest;
+import com.cct.redmeatojbackend.question.domain.dto.question.UpdateQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.vo.QuestionVo;
 
 /**

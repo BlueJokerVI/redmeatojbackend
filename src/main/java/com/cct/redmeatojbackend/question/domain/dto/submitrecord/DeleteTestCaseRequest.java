@@ -1,4 +1,4 @@
-package com.cct.redmeatojbackend.question.domain.dto;
+package com.cct.redmeatojbackend.question.domain.dto.submitrecord;
 
 
 import io.swagger.annotations.ApiModel;

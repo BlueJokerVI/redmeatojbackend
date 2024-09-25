@@ -1,5 +1,6 @@
-package com.cct.redmeatojbackend.question.domain.dto;
+package com.cct.redmeatojbackend.question.domain.dto.submitrecord;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -17,22 +18,19 @@ import java.util.Date;
 @Data
 public class UpdateSubmitRecordRequest implements Serializable {
 
-
+    @NotNull
+    @ApiModelProperty("提交记录id")
     private Long id;
 
-    private Long questionId;
-
-    private Long userId;
-
-    private String submitContext;
-
+    @ApiModelProperty("提交记录结果")
+    @NotNull
     private Integer judgeResult;
 
+    @ApiModelProperty("时间消耗")
     private Integer timeConsume;
 
+    @ApiModelProperty("内存消耗")
     private Integer memoryConsume;
-
-    private Date createTime;
 
     private static final long serialVersionUID = 1L;
 }

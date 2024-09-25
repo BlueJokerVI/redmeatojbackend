@@ -2,7 +2,7 @@ package com.cct.redmeatojbackend.question.dao;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cct.redmeatojbackend.question.dao.mapper.QuestionMapper;
-import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionRequest;
+import com.cct.redmeatojbackend.question.domain.dto.question.SearchQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import org.springframework.stereotype.Repository;
 

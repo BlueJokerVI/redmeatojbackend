@@ -16,10 +16,10 @@ import com.cct.redmeatojbackend.common.utils.ThrowUtils;
 import com.cct.redmeatojbackend.question.dao.QuestionDao;
 import com.cct.redmeatojbackend.question.dao.SubmitRecordDao;
 import com.cct.redmeatojbackend.question.dao.mapper.SubmitRecordMapper;
-import com.cct.redmeatojbackend.question.domain.dto.AddSubmitRecordRequest;
-import com.cct.redmeatojbackend.question.domain.dto.SearchSubmitRecordListRequest;
-import com.cct.redmeatojbackend.question.domain.dto.SearchSubmitRecordRequest;
-import com.cct.redmeatojbackend.question.domain.dto.UpdateSubmitRecordRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.AddSubmitRecordRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.SearchSubmitRecordListRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.SearchSubmitRecordRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.UpdateSubmitRecordRequest;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import com.cct.redmeatojbackend.question.domain.entity.SubmitRecord;
 import com.cct.redmeatojbackend.question.domain.entity.TestCase;
@@ -163,10 +163,7 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
                 .eq(searchSubmitRecordListRequest.getId() != null, SubmitRecord::getId, searchSubmitRecordListRequest.getId())
                 .eq(searchSubmitRecordListRequest.getQuestionId() != null, SubmitRecord::getQuestionId, searchSubmitRecordListRequest.getQuestionId())
                 .eq(searchSubmitRecordListRequest.getUserId() != null, SubmitRecord::getUserId, searchSubmitRecordListRequest.getUserId())
-                .eq(searchSubmitRecordListRequest.getSubmitContext() != null, SubmitRecord::getSubmitContext, searchSubmitRecordListRequest.getSubmitContext())
                 .eq(searchSubmitRecordListRequest.getJudgeResult() != null, SubmitRecord::getJudgeResult, searchSubmitRecordListRequest.getJudgeResult())
-                .eq(searchSubmitRecordListRequest.getTimeConsume() != null, SubmitRecord::getTimeConsume, searchSubmitRecordListRequest.getTimeConsume())
-                .eq(searchSubmitRecordListRequest.getMemoryConsume() != null, SubmitRecord::getMemoryConsume, searchSubmitRecordListRequest.getMemoryConsume())
                 .eq(searchSubmitRecordListRequest.getCreateTime() != null, SubmitRecord::getCreateTime, searchSubmitRecordListRequest.getCreateTime());
         Page<SubmitRecord> submitRecordPage = submitRecordMapper.selectPage(searchSubmitRecordListRequest.plusPage(), wrapper);
         BasePageResp<SubmitRecord> basePageResp = BasePageResp.init(submitRecordPage);

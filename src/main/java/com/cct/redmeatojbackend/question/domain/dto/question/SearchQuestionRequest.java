@@ -1,4 +1,4 @@
-package com.cct.redmeatojbackend.question.domain.dto;
+package com.cct.redmeatojbackend.question.domain.dto.question;
 import cn.hutool.core.bean.BeanUtil;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import io.swagger.annotations.ApiModel;

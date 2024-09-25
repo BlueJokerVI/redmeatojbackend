@@ -6,7 +6,7 @@ import com.cct.redmeatojbackend.coderunbox.service.RunCodeServiceManagerChain;
 import com.cct.redmeatojbackend.common.constant.OssConstant;
 import com.cct.redmeatojbackend.oss.MinIOTemplate;
 import com.cct.redmeatojbackend.question.dao.QuestionDao;
-import com.cct.redmeatojbackend.question.domain.dto.SearchQuestionRequest;
+import com.cct.redmeatojbackend.question.domain.dto.question.SearchQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import io.minio.Result;
 import io.minio.errors.*;

@@ -23,7 +23,7 @@ public class GetTestCasePageRequest extends BasePageReq implements Serializable 
     private Long questionId;
     @Override
     public Page<TestCase> plusPage() {
-        return new Page<>();
+        return new Page<>(getCurrent(),getPageSize());
     }
 
     private static final long serialVersionUID = 1L;

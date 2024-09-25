@@ -1,4 +1,4 @@
-package com.cct.redmeatojbackend.question.domain.dto;
+package com.cct.redmeatojbackend.question.domain.dto.question;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,7 +37,7 @@ public class SearchQuestionListRequest extends BasePageReq implements Serializab
 
     @Override
     public Page<Question> plusPage() {
-        return new Page<>();
+        return new Page<>(getCurrent(),getPageSize());
     }
 
     private static final long serialVersionUID = 1L;

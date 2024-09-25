@@ -1,12 +1,14 @@
 package com.cct.redmeatojbackend.question.controller;
 
 import com.cct.redmeatojbackend.common.annotation.Login;
+import com.cct.redmeatojbackend.common.annotation.RoleAccess;
+import com.cct.redmeatojbackend.common.domain.enums.UserRoleEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
-import com.cct.redmeatojbackend.question.domain.dto.AddSubmitRecordRequest;
-import com.cct.redmeatojbackend.question.domain.dto.SearchSubmitRecordListRequest;
-import com.cct.redmeatojbackend.question.domain.dto.SearchSubmitRecordRequest;
-import com.cct.redmeatojbackend.question.domain.dto.UpdateSubmitRecordRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.AddSubmitRecordRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.SearchSubmitRecordListRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.SearchSubmitRecordRequest;
+import com.cct.redmeatojbackend.question.domain.dto.submitrecord.UpdateSubmitRecordRequest;
 import com.cct.redmeatojbackend.question.domain.vo.SubmitRecordVo;
 import com.cct.redmeatojbackend.question.service.SubmitRecordService;
 import io.swagger.annotations.ApiOperation;
@@ -36,24 +38,28 @@ public class SubmitRecordController {
 
     @GetMapping("/delete")
     @ApiOperation("提交记录删除")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
     BaseResponse<Void>  deleteSubmitRecord(@Valid @NotNull @RequestParam Long submitRecordId){
         return submitRecordService.deleteSubmitRecord(submitRecordId);
     }
 
     @PostMapping("/update")
     @ApiOperation("提交记录更新")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
     BaseResponse<SubmitRecordVo>  updateSubmitRecord(@Valid @RequestBody UpdateSubmitRecordRequest updateSubmitRecordRequest){
         return submitRecordService.updateSubmitRecord(updateSubmitRecordRequest);
     }
 
     @PostMapping("/search")
     @ApiOperation("提交记录查询")
+    @Login
     BaseResponse<SubmitRecordVo>  searchSubmitRecord(@Valid @RequestBody SearchSubmitRecordRequest searchSubmitRecordRequest){
         return submitRecordService.searchSubmitRecord(searchSubmitRecordRequest);
     }
 
     @PostMapping("/searchPage")
     @ApiOperation("提交记录分页查询")
+    @Login
     BaseResponse<BasePageResp<SubmitRecordVo>> searchSubmitRecordPage(@Valid @RequestBody SearchSubmitRecordListRequest searchSubmitRecordListRequest){
         return submitRecordService.searchSubmitRecordPage(searchSubmitRecordListRequest);
     }
