@@ -2,7 +2,8 @@ package com.cct.redmeatojbackend.question.service;
 
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
-import com.cct.redmeatojbackend.question.domain.dto.GetTestCasePageRequest;
+import com.cct.redmeatojbackend.question.domain.dto.testcase.AddTestCaseRequest;
+import com.cct.redmeatojbackend.question.domain.dto.testcase.GetTestCasePageRequest;
 import com.cct.redmeatojbackend.question.domain.entity.TestCase;
 
 import java.util.List;
@@ -51,4 +52,10 @@ public interface QuestionIOService {
      * @return
      */
     List<TestCase> getTestCasesByQuestionId(Long questionId);
+
+    /**
+     * 添加测试用例集合
+     * @param addTestCaseRequest
+     */
+    void addTestCases(AddTestCaseRequest addTestCaseRequest);
 }

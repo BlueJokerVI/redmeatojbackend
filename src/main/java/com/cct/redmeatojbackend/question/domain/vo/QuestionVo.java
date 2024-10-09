@@ -49,6 +49,9 @@ public class QuestionVo implements Serializable {
     @ApiModelProperty("题目通过次数")
     private Integer questionAcNum;
 
+    @ApiModelProperty("题目测试用例数")
+    private Integer questionIoTotal;
+
     @ApiModelProperty("创建时间")
     private Date createTime;
 

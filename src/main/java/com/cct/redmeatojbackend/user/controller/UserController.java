@@ -1,6 +1,7 @@
 package com.cct.redmeatojbackend.user.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cct.redmeatojbackend.common.annotation.Limit;
 import com.cct.redmeatojbackend.common.annotation.Login;
 import com.cct.redmeatojbackend.common.annotation.RoleAccess;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
@@ -124,6 +125,7 @@ public class UserController {
     @ApiOperation("测试")
     @GetMapping("/test")
     @Login
+    @Limit(keyPrefix = "test", count = 10,interval = 5)
     BaseResponse<String> test() {
         return RespUtils.success("test");
     }

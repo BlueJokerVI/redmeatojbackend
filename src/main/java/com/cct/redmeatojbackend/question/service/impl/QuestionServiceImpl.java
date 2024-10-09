@@ -2,7 +2,9 @@ package com.cct.redmeatojbackend.question.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
@@ -51,7 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
     public BaseResponse<QuestionVo> addQuestion(AddQuestionRequest addQuestionRequest) {
         Question question = addQuestionRequest.toQuestion();
         //1.检测题目是否已经存在
-        Question existed =  questionDao.searchQuestionByName(question.getQuestionName());
+        Question existed = questionDao.searchQuestionByName(question.getQuestionName());
         ThrowUtils.throwIf(existed != null, RespCodeEnum.OPERATION_ERROR, "题目名称已存在");
         question.setId(IdUtil.getSnowflakeNextId());
         //2.保存题目
@@ -94,7 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
         BeanUtil.copyProperties(updateQuestionRequest, oldQuestion, CopyOptions.create().setIgnoreNullValue(true));
 
         //2.如果要跟新的名字是否已经存在
-        if(updateQuestionRequest.getQuestionName() != null) {
+        if (updateQuestionRequest.getQuestionName() != null) {
             Question existed = questionDao.searchQuestionByName(updateQuestionRequest.getQuestionName());
             ThrowUtils.throwIf(existed != null && !existed.getId().equals(updateQuestionRequest.getId()), RespCodeEnum.OPERATION_ERROR, "题目名称已存在");
         }
@@ -126,10 +128,15 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public BaseResponse<BasePageResp<QuestionVo>> searchQuestionPage(SearchQuestionListRequest searchQuestionListRequest) {
         LambdaQueryWrapper<Question> wrapper = new LambdaQueryWrapper<>();
+        List<String> questionTags = searchQuestionListRequest.getQuestionTags();
         wrapper.select()
                 .eq(searchQuestionListRequest.getId() != null, Question::getId, searchQuestionListRequest.getId())
-                .eq(searchQuestionListRequest.getQuestionName() != null, Question::getQuestionName, searchQuestionListRequest.getQuestionName())
-                .like(searchQuestionListRequest.getQuestionTags() != null, Question::getQuestionTags, searchQuestionListRequest.getQuestionTags());
+                .eq(StrUtil.isNotBlank(searchQuestionListRequest.getQuestionName()), Question::getQuestionName, searchQuestionListRequest.getQuestionName());
+        if (CollUtil.isNotEmpty(questionTags)) {
+            for (String questionTag : questionTags) {
+                wrapper.like(StrUtil.isNotBlank(questionTag), Question::getQuestionTags, questionTag);
+            }
+        }
         Page<Question> questionPage = questionMapper.selectPage(searchQuestionListRequest.plusPage(), wrapper);
         BasePageResp<Question> basePageResp = BasePageResp.init(questionPage);
         return RespUtils.success(basePageResp.toVo(basePageResp, QuestionVo.class));

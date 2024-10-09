@@ -26,13 +26,13 @@ public class RedisUtils {
     }
 
     private static final String LUA_INCR_EXPIRE =
-            "local key,ttl=KEYS[1],ARGV[1] \n" +
+            "local keyPrefxi,ttl=KEYS[1],ARGV[1] \n" +
                     " \n" +
-                    "if redis.call('EXISTS',key)==0 then   \n" +
-                    "  redis.call('SETEX',key,ttl,1) \n" +
+                    "if redis.call('EXISTS',keyPrefxi)==0 then   \n" +
+                    "  redis.call('SETEX',keyPrefxi,ttl,1) \n" +
                     "  return 1 \n" +
                     "else \n" +
-                    "  return tonumber(redis.call('INCR',key)) \n" +
+                    "  return tonumber(redis.call('INCR',keyPrefxi)) \n" +
                     "end ";
 
     public static Long inc(String key, int time, TimeUnit unit) {
@@ -95,7 +95,7 @@ public class RedisUtils {
     }
 
     /**
-     * 根据 key 获取过期时间
+     * 根据 keyPrefxi 获取过期时间
      *
      * @param key 键 不能为null
      * @return 时间(秒) 返回0代表为永久有效
@@ -105,7 +105,7 @@ public class RedisUtils {
     }
 
     /**
-     * 根据 key 获取过期时间
+     * 根据 keyPrefxi 获取过期时间
      *
      * @param key 键 不能为null
      * @return 时间(秒) 返回0代表为永久有效
@@ -117,7 +117,7 @@ public class RedisUtils {
     /**
      * 查找匹配key
      *
-     * @param pattern key
+     * @param pattern keyPrefxi
      * @return /
      */
     public static List<String> scan(String pattern) {
@@ -138,9 +138,9 @@ public class RedisUtils {
     }
 
     /**
-     * 分页查询 key
+     * 分页查询 keyPrefxi
      *
-     * @param patternKey key
+     * @param patternKey keyPrefxi
      * @param page       页码
      * @param size       每页数目
      * @return /
@@ -946,14 +946,14 @@ public class RedisUtils {
 //    /**
 //     * 获取集合的元素, 从大到小排序, 并返回score值
 //     *
-//     * @param key
+//     * @param keyPrefxi
 //     * @param start
 //     * @param end
 //     * @return
 //     */
-//    public Set<TypedTuple<String>> zReverseRangeWithScores(String key,
+//    public Set<TypedTuple<String>> zReverseRangeWithScores(String keyPrefxi,
 //                                                           long start, long end) {
-//        return redisTemplate.opsForZSet().reverseRangeWithScores(key, start,
+//        return redisTemplate.opsForZSet().reverseRangeWithScores(keyPrefxi, start,
 //                end);
 //    }
 
@@ -985,27 +985,27 @@ public class RedisUtils {
 //    /**
 //     * 根据Score值查询集合元素, 从大到小排序
 //     *
-//     * @param key
+//     * @param keyPrefxi
 //     * @param min
 //     * @param max
 //     * @return
 //     */
-//    public Set<String> zReverseRangeByScore(String key, double min,
+//    public Set<String> zReverseRangeByScore(String keyPrefxi, double min,
 //                                            double max) {
-//        return redisTemplate.opsForZSet().reverseRangeByScore(key, min, max);
+//        return redisTemplate.opsForZSet().reverseRangeByScore(keyPrefxi, min, max);
 //    }
 
 //    /**
 //     * 根据Score值查询集合元素, 从大到小排序
 //     *
-//     * @param key
+//     * @param keyPrefxi
 //     * @param min
 //     * @param max
 //     * @return
 //     */
 //    public Set<TypedTuple<String>> zReverseRangeByScoreWithScores(
-//            String key, double min, double max) {
-//        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key,
+//            String keyPrefxi, double min, double max) {
+//        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(keyPrefxi,
 //                min, max);
 //    }
 

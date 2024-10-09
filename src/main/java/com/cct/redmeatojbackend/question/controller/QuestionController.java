@@ -5,12 +5,13 @@ import com.cct.redmeatojbackend.common.domain.enums.UserRoleEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
 import com.cct.redmeatojbackend.common.utils.RespUtils;
-import com.cct.redmeatojbackend.question.domain.dto.*;
 import com.cct.redmeatojbackend.question.domain.dto.question.AddQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.dto.question.SearchQuestionListRequest;
 import com.cct.redmeatojbackend.question.domain.dto.question.SearchQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.dto.question.UpdateQuestionRequest;
 import com.cct.redmeatojbackend.question.domain.dto.submitrecord.DeleteTestCaseRequest;
+import com.cct.redmeatojbackend.question.domain.dto.testcase.AddTestCaseRequest;
+import com.cct.redmeatojbackend.question.domain.dto.testcase.GetTestCasePageRequest;
 import com.cct.redmeatojbackend.question.domain.entity.TestCase;
 import com.cct.redmeatojbackend.question.domain.vo.QuestionVo;
 import com.cct.redmeatojbackend.question.service.QuestionIOService;
@@ -84,6 +85,15 @@ public class QuestionController {
     @ApiOperation("测试用例删除")
     BaseResponse<Void> deleteTestCase(@Valid @RequestBody DeleteTestCaseRequest deleteTestCaseRequest) {
         questionIOService.deleteTestCase(deleteTestCaseRequest.getQuestionId(), deleteTestCaseRequest.getTestCaseId());
+        return RespUtils.success();
+    }
+
+
+    @PostMapping("/addTestCases")
+    @RoleAccess(role = UserRoleEnum.ADMIN_USER)
+    @ApiOperation("测试用例添加")
+    BaseResponse<Void> addTestCases(@Valid @RequestBody AddTestCaseRequest addTestCaseRequest) {
+        questionIOService.addTestCases(addTestCaseRequest);
         return RespUtils.success();
     }
 

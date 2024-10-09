@@ -1,4 +1,4 @@
-package com.cct.redmeatojbackend.question.domain.dto;
+package com.cct.redmeatojbackend.question.domain.dto.testcase;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cct.redmeatojbackend.common.domain.dto.BasePageReq;

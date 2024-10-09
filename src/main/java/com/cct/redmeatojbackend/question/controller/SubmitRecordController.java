@@ -1,5 +1,6 @@
 package com.cct.redmeatojbackend.question.controller;
 
+import com.cct.redmeatojbackend.common.annotation.Limit;
 import com.cct.redmeatojbackend.common.annotation.Login;
 import com.cct.redmeatojbackend.common.annotation.RoleAccess;
 import com.cct.redmeatojbackend.common.domain.enums.UserRoleEnum;
@@ -11,6 +12,7 @@ import com.cct.redmeatojbackend.question.domain.dto.submitrecord.SearchSubmitRec
 import com.cct.redmeatojbackend.question.domain.dto.submitrecord.UpdateSubmitRecordRequest;
 import com.cct.redmeatojbackend.question.domain.vo.SubmitRecordVo;
 import com.cct.redmeatojbackend.question.service.SubmitRecordService;
+import com.cct.redmeatojbackend.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
@@ -27,11 +29,12 @@ import javax.validation.constraints.NotNull;
 public class SubmitRecordController {
 
     @Resource
-    SubmitRecordService submitRecordService;
+    private SubmitRecordService submitRecordService;
 
     @PostMapping("/add")
     @ApiOperation("提交记录添加")
     @Login
+    @Limit(keyPrefix = "com.cct.redmeatojbackend.question.controller.addSubmitRecord",count = 1,interval = 1)
     BaseResponse<SubmitRecordVo>  addSubmitRecord(@Valid @RequestBody AddSubmitRecordRequest addSubmitRecordRequest){
         return submitRecordService.addSubmitRecord(addSubmitRecordRequest);
     }

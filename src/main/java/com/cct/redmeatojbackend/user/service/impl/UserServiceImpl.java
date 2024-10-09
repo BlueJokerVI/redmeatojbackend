@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         String encryptionPassword = encryption(password);
         String userPassword = user.getPassword();
         ThrowUtils.throwIf(!encryptionPassword.equals(userPassword), RespCodeEnum.PARAMS_ERROR, "密码错误");
-        //3.存储登入用户session信息
+        //3.存储登入用户session信息  todo: 优化用户多次登入，不创建新的session
         // 获取当前的 HttpSession
         // 从 RequestContextHolder 获取当前请求的 RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
