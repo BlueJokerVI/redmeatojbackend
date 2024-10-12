@@ -21,21 +21,21 @@ public class ThreadPoolConfig {
 
 
     /**
-     * 运行代码模块中用于处理代码IO线程池
+     * 运行代码模块线程池
      */
-    public static final String CODE_BOX_IO_EXECUTOR = "codeBoxIOExecutor";
+    public static final String CODE_BOX_EXECUTOR = "codeBoxExecutor";
     /**
-     *
+     *  内存监控线程池
      */
     public static final String CODE_BOX_MONITOR_MEMORY_EXECUTOR = "codeBoxMonitorMemoryExecutor";
-
-    @Bean(name = CODE_BOX_IO_EXECUTOR)
+    
+    @Bean(name = CODE_BOX_EXECUTOR)
     public Executor codeBoxInputExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //实现优雅停机，使线程池内任务执行完毕在停机
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(20);
         executor.setQueueCapacity(200);
         executor.setThreadNamePrefix("codeRunBox-executor-");
         //装饰器模式替换增强后的MyThreadFactory

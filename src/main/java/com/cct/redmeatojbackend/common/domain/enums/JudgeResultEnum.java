@@ -1,4 +1,4 @@
-package com.cct.redmeatojbackend.question.domain.enums;
+package com.cct.redmeatojbackend.common.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

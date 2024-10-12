@@ -1,5 +1,6 @@
 package com.cct.redmeatojbackend.user.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
@@ -85,14 +86,19 @@ public class UserServiceImpl implements UserService {
         String encryptionPassword = encryption(password);
         String userPassword = user.getPassword();
         ThrowUtils.throwIf(!encryptionPassword.equals(userPassword), RespCodeEnum.PARAMS_ERROR, "密码错误");
-        //3.存储登入用户session信息  todo: 优化用户多次登入，不创建新的session
+        //3.存储登入用户session信息
         // 获取当前的 HttpSession
         // 从 RequestContextHolder 获取当前请求的 RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         ThrowUtils.throwIf(requestAttributes == null, RespCodeEnum.OPERATION_ERROR, "用户信息存入session失败");
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         HttpSession session = request.getSession();
-        session.setAttribute(LOGIN_USER_INFO_SESSION_KEY, UserVo.getVo(user));
+
+        //用户session信息已存在，则不在存入
+        UserVo existed = (UserVo) session.getAttribute(LOGIN_USER_INFO_SESSION_KEY);
+        if (ObjectUtil.isNull(existed)) {
+            session.setAttribute(LOGIN_USER_INFO_SESSION_KEY, UserVo.getVo(user));
+        }
         return user;
     }
 

@@ -31,17 +31,17 @@ spring:
     # 配置Date类型序列化格式
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-#  shardingsphere:
-#    #数据源配置
-#    datasource:
-#      # 多数据源以逗号隔开即可
-#      names: redmeatoj
-#      redmeatoj:
-#        type: com.zaxxer.hikari.HikariDataSource
-#        driver-class-name: com.mysql.cj.jdbc.Driver
-#        jdbc-url: jdbc:mysql://${redmeatoj.mysql.ip}:${redmeatoj.mysql.port}/${redmeatoj.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-#        username: ${redmeatoj.mysql.username}
-#        password: ${redmeatoj.mysql.password}
+    #  shardingsphere:
+    #    #数据源配置
+    #    datasource:
+    #      # 多数据源以逗号隔开即可
+    #      names: redmeatoj
+    #      redmeatoj:
+    #        type: com.zaxxer.hikari.HikariDataSource
+    #        driver-class-name: com.mysql.cj.jdbc.Driver
+    #        jdbc-url: jdbc:mysql://${redmeatoj.mysql.ip}:${redmeatoj.mysql.port}/${redmeatoj.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    #        username: ${redmeatoj.mysql.username}
+    #        password: ${redmeatoj.mysql.password}
     # 规则配置
     rules:
       sharding:
@@ -84,4 +84,11 @@ oss:
   accessKey: ${redmeatoj.oss.accessKey}
   secretKey: ${redmeatoj.oss.secretKey}
   bucketName: ${redmeatoj.oss.bucketName}
+
+# 可用代码沙箱地址
+codebox:
+  urls: ${redmeatoj.codebox.urls}
+  auth:
+    header: ${redmeatoj.codebox.auth.header}
+    secret: ${redmeatoj.codebox.auth.secret}
 

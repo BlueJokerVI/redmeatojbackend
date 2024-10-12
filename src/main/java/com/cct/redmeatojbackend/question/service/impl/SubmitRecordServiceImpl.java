@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cct.redmeatojbackend.coderunbox.domain.RunCodeReq;
 import com.cct.redmeatojbackend.coderunbox.domain.RunCodeResp;
+import com.cct.redmeatojbackend.coderunbox.service.RemoteCodeBoxService;
 import com.cct.redmeatojbackend.coderunbox.service.RunCodeServiceManagerChain;
 import com.cct.redmeatojbackend.common.constant.CommonConstant;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
+import com.cct.redmeatojbackend.common.exception.BusinessException;
 import com.cct.redmeatojbackend.common.utils.RespUtils;
 import com.cct.redmeatojbackend.common.utils.ThrowUtils;
 import com.cct.redmeatojbackend.question.dao.QuestionDao;
@@ -24,7 +26,7 @@ import com.cct.redmeatojbackend.question.domain.dto.submitrecord.UpdateSubmitRec
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import com.cct.redmeatojbackend.question.domain.entity.SubmitRecord;
 import com.cct.redmeatojbackend.question.domain.entity.TestCase;
-import com.cct.redmeatojbackend.question.domain.enums.JudgeResultEnum;
+import com.cct.redmeatojbackend.common.domain.enums.JudgeResultEnum;
 import com.cct.redmeatojbackend.question.domain.vo.SubmitRecordVo;
 import com.cct.redmeatojbackend.question.service.QuestionIOService;
 import com.cct.redmeatojbackend.question.service.SubmitRecordService;
@@ -35,7 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author cct
@@ -60,6 +63,9 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
     private RunCodeServiceManagerChain runCodeServiceManagerChain;
 
     @Resource
+    private RemoteCodeBoxService remoteCodeBoxService;
+
+    @Resource
     private UserService userService;
 
     @Override
@@ -75,75 +81,43 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
         Question existed = questionDao.getById(questionId);
         ThrowUtils.throwIf(existed == null, RespCodeEnum.OPERATION_ERROR, "题目不存在");
 
-        //修改题目的提交次数
-        int questionSubmitNum = existed.getQuestionSubmitNum();
-        existed.setQuestionSubmitNum(questionSubmitNum + 1);
         //3.获取该题目的测试用例
         List<TestCase> testCaseList = questionIOService.getTestCasesByQuestionId(questionId);
 
         //4.调用代码运行箱运行用户提交代码
+        RunCodeReq runCodeReq = RunCodeReq.builder()
+                .language(addSubmitRecordRequest.getLanguage())
+                .code(addSubmitRecordRequest.getSubmitContext())
+                .testCases(testCaseList)
+                .timeLimit(existed.getQuestionTimeLimit())
+                .memoryLimit(existed.getQuestionMemLimit())
+                .build();
 
-        //统计最大测试内存与时间消耗
-        int maxTimeConsume = Integer.MIN_VALUE;
-        int maxMemConsume = Integer.MIN_VALUE;
-        //用于标记是否该题目通过
-        boolean normal = true;
-        //遍历测试用例，逐个运行
-        for (TestCase testCase : testCaseList) {
-            RunCodeReq runCodeReq = RunCodeReq.builder()
-                    .language(addSubmitRecordRequest.getLanguage())
-                    .code(addSubmitRecordRequest.getSubmitContext())
-                    .inputContent(testCase.getInputContent())
-                    .timeLimit(existed.getQuestionTimeLimit())
-                    .memoryLimit(existed.getQuestionMemLimit())
-                    .build();
-            RunCodeResp runCodeResp = runCodeServiceManagerChain.runCode(runCodeReq);
-            if (!Objects.equals(runCodeResp.getCode(), RespCodeEnum.SUCCESS.getCode())) {
-                //代码没能正常运行结束
-                JudgeResultEnum resultEnum = JudgeResultEnum.getEnumByCode(runCodeResp.getCode());
-                submitRecord.setJudgeResult(Optional.ofNullable(resultEnum).orElse(JudgeResultEnum.RUNTIME_ERROR).getCode());
-                submitRecord.setLastRunCase(testCase.getTestCaseId());
-                normal = false;
-                break;
-            }
-
-            //代码正常运行结束，判断输出是否正确
-            if (!Objects.equals(runCodeResp.getOutputContext(), testCase.getOutputContent())) {
-                //输出与预取不符
-                submitRecord.setJudgeResult(JudgeResultEnum.ANSWER_ERROR.getCode());
-                submitRecord.setLastRunCase(testCase.getTestCaseId());
-                normal = false;
-                break;
-            }
-
-            if (runCodeResp.getMemoryConsume() > maxMemConsume) {
-                maxMemConsume = runCodeResp.getMemoryConsume();
-            }
-            if (runCodeResp.getTimeConsume() > maxTimeConsume) {
-                maxTimeConsume = runCodeResp.getTimeConsume();
-            }
+        BaseResponse<RunCodeResp> response = remoteCodeBoxService.run(runCodeReq);
+        if(response.getCode()!=RespCodeEnum.SUCCESS.getCode()){
+            throw new BusinessException(RespCodeEnum.OPERATION_ERROR, response.getMessage());
         }
-
-        if (normal) {
-            //所有测试用例均通过
-            submitRecord.setJudgeResult(JudgeResultEnum.SUCCESS.getCode());
-            submitRecord.setMemoryConsume(maxMemConsume);
-            submitRecord.setLastRunCase(testCaseList.get(testCaseList.size() - 1).getTestCaseId());
-            submitRecord.setTimeConsume(maxTimeConsume);
-        }
+//        RunCodeResp runCodeResp = runCodeServiceManagerChain.runCode(runCodeReq);
+        RunCodeResp runCodeResp = response.getData();
 
         //4.封装提交记录结果返回
         submitRecord.setId(IdUtil.getSnowflakeNextId());
+        submitRecord.setJudgeResult(runCodeResp.getCode());
+        submitRecord.setLastRunCase(runCodeResp.getLastTestCaseId());
+        submitRecord.setLanguage(runCodeReq.getLanguage());
+        submitRecord.setSubmitContext(runCodeReq.getCode());
+        submitRecord.setTimeConsume(runCodeResp.getTimeConsume());
+        submitRecord.setMemoryConsume(runCodeResp.getMemoryConsume());
         ThrowUtils.throwIf(!submitRecordDao.save(submitRecord), RespCodeEnum.OPERATION_ERROR, "添加提交记录失败");
 
-        //修改题目ac次数
-        if (submitRecord.getJudgeResult() == JudgeResultEnum.SUCCESS.getCode()) {
-            int questionAcNum = existed.getQuestionAcNum();
-            existed.setQuestionAcNum(questionAcNum + 1);
-        }
 
-        //5.更新题目的提交信息
-        ThrowUtils.throwIf(!questionDao.updateById(existed), RespCodeEnum.OPERATION_ERROR, "更新题目信息失败");
+        if (submitRecord.getJudgeResult() == JudgeResultEnum.SUCCESS.getCode()) {
+            //增加题目ac 与 提交次数
+            ThrowUtils.throwIf(!questionDao.addQuestionSubmitNumAndAcNum(questionId), RespCodeEnum.OPERATION_ERROR, "更新题目提交次数失败");
+        }else{
+            //增加题目提交次数
+            ThrowUtils.throwIf(!questionDao.addQuestionSubmitNum(questionId), RespCodeEnum.OPERATION_ERROR, "更新题目提交次数失败");
+        }
 
         return RespUtils.success(SubmitRecordVo.toVo(submitRecord));
     }

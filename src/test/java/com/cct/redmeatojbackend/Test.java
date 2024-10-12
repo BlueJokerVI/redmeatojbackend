@@ -1,4 +1,4 @@
-
+package com.cct.redmeatojbackend;
 
 //package com.cct.redmeatojbackend;
 //
@@ -64,4 +64,15 @@
 //        }
 //    }
 //}
-import java.util.Scanner; public class Test { public static void main(String[] args) throws InterruptedException { Scanner scanner = new Scanner(System.in); int i = scanner.nextInt(); int i1 = scanner.nextInt(); System.out.print(i + i1); } }
+
+import com.cct.redmeatojbackend.coderunbox.domain.RunCodeReq;
+
+import java.io.IOException;
+
+public class Test {
+    public static void main(String[] args) throws InterruptedException, IOException {
+
+        RunCodeReq runCodeReq = new RunCodeReq();
+        System.out.println();
+    }
+}

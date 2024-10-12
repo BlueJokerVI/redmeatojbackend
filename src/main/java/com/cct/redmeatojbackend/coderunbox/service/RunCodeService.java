@@ -4,6 +4,9 @@ import com.cct.redmeatojbackend.coderunbox.domain.RunCodeReq;
 import com.cct.redmeatojbackend.coderunbox.domain.RunCodeResp;
 
 import javax.validation.Valid;
+import java.util.concurrent.CompletableFuture;
+
+//import static com.cct.redmeatojbackend.common.thread.ThreadPoolConfig.CODE_BOX_RUN_EXECUTOR;
 
 /**
  * @BelongsProject: redmeatojbackend
@@ -16,11 +19,12 @@ public interface RunCodeService {
 
     boolean support(String language);
 
-
     /**
      * 运行代码
+     *
      * @param runCodeReq
      * @return
      */
     RunCodeResp run(@Valid RunCodeReq runCodeReq);
+
 }
