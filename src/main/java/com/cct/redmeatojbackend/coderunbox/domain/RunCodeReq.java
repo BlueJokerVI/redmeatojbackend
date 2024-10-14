@@ -25,6 +25,11 @@ public class RunCodeReq {
     String language;
 
     /**
+     * 提交记录id
+     */
+    Long submitRecordId;
+
+    /**
      * 代码
      */
     String code;

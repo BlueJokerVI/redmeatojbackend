@@ -23,4 +23,6 @@ public interface SubmitRecordService {
     BaseResponse<SubmitRecordVo> searchSubmitRecord(SearchSubmitRecordRequest searchSubmitRecordRequest);
 
     BaseResponse<BasePageResp<SubmitRecordVo>> searchSubmitRecordPage(SearchSubmitRecordListRequest searchSubmitRecordListRequest);
+
+    BaseResponse<Long> addSubmitRecordWithMQ(AddSubmitRecordRequest addSubmitRecordRequest);
 }

@@ -18,6 +18,7 @@ public enum JudgeResultEnum {
      */
     SUCCESS(0, "成功通过"),
     RUNTIME_OUT(1, "运行超时"),
+    WAITING(2,"判題中"),
     MEMORY_OUT(3, "内存超限"),
     RUNTIME_ERROR(4, "运行时出错"),
     COMPILE_ERROR(5, "编译失败"),

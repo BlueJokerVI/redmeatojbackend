@@ -31,6 +31,9 @@ import com.cct.redmeatojbackend.question.domain.vo.SubmitRecordVo;
 import com.cct.redmeatojbackend.question.service.QuestionIOService;
 import com.cct.redmeatojbackend.question.service.SubmitRecordService;
 import com.cct.redmeatojbackend.user.service.UserService;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static com.cct.redmeatojbackend.common.constant.MQConstant.QUESTION_SUBMIT_TOPIC;
 
 /**
  * @author cct
@@ -67,6 +72,9 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
@@ -100,7 +108,7 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
 //        RunCodeResp runCodeResp = runCodeServiceManagerChain.runCode(runCodeReq);
         RunCodeResp runCodeResp = response.getData();
 
-        //4.封装提交记录结果返回
+        //5.封装提交记录结果返回
         submitRecord.setId(IdUtil.getSnowflakeNextId());
         submitRecord.setJudgeResult(runCodeResp.getCode());
         submitRecord.setLastRunCase(runCodeResp.getLastTestCaseId());
@@ -162,5 +170,44 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
         Page<SubmitRecord> submitRecordPage = submitRecordMapper.selectPage(searchSubmitRecordListRequest.plusPage(), wrapper);
         BasePageResp<SubmitRecord> basePageResp = BasePageResp.init(submitRecordPage);
         return RespUtils.success(basePageResp.toVo(basePageResp, SubmitRecordVo.class));
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public BaseResponse<Long> addSubmitRecordWithMQ(AddSubmitRecordRequest addSubmitRecordRequest) {
+
+        //1.添加记录请求转为要添加的提交记录
+        SubmitRecord submitRecord = addSubmitRecordRequest.toSubmitRecord();
+        submitRecord.setUserId(userService.getCurrentUser().getId());
+
+        //2.判断题目是否存在
+        Long questionId = addSubmitRecordRequest.getQuestionId();
+        Question existed = questionDao.getById(questionId);
+        ThrowUtils.throwIf(existed == null, RespCodeEnum.OPERATION_ERROR, "题目不存在");
+
+        //3.获取该题目的测试用例
+        List<TestCase> testCaseList = questionIOService.getTestCasesByQuestionId(questionId);
+
+        //4.调用代码运行箱运行用户提交代码
+        submitRecord.setId(IdUtil.getSnowflakeNextId());
+        RunCodeReq runCodeReq = RunCodeReq.builder()
+                .submitRecordId(submitRecord.getId())
+                .language(addSubmitRecordRequest.getLanguage())
+                .code(addSubmitRecordRequest.getSubmitContext())
+                .testCases(testCaseList)
+                .timeLimit(existed.getQuestionTimeLimit())
+                .memoryLimit(existed.getQuestionMemLimit())
+                .build();
+
+        //5.将运行代码请求放入mq
+        Message<RunCodeReq> build = MessageBuilder.withPayload(runCodeReq).build();
+        rocketMQTemplate.send(QUESTION_SUBMIT_TOPIC,build);
+
+        //6.保存提交记录，并设置该记录正在Wait
+
+        submitRecord.setJudgeResult(JudgeResultEnum.WAITING.getCode());
+        ThrowUtils.throwIf(!submitRecordDao.save(submitRecord), RespCodeEnum.OPERATION_ERROR, "添加提交记录失败");
+
+        return RespUtils.success(submitRecord.getId());
     }
 }

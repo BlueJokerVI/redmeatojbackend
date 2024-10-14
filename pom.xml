@@ -112,6 +112,14 @@
             <version>3.34.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-spring-boot-starter -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+
         <!--模板引擎-->
         <!-- https://freemarker.apache.org/index.html -->
         <dependency>

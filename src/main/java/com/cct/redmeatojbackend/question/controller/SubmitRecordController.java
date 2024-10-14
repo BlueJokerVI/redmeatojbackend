@@ -39,6 +39,13 @@ public class SubmitRecordController {
         return submitRecordService.addSubmitRecord(addSubmitRecordRequest);
     }
 
+    @PostMapping("/addMQ")
+    @ApiOperation("提交记录添加MQ")
+    @Login
+    BaseResponse<Long> addSubmitRecordWithMQ(@Valid @RequestBody AddSubmitRecordRequest addSubmitRecordRequest){
+        return submitRecordService.addSubmitRecordWithMQ(addSubmitRecordRequest);
+    }
+
     @GetMapping("/delete")
     @ApiOperation("提交记录删除")
     @RoleAccess(role = UserRoleEnum.ADMIN_USER)
