@@ -30,7 +30,7 @@ public class ThreadPoolConfig {
     public static final String CODE_BOX_MONITOR_MEMORY_EXECUTOR = "codeBoxMonitorMemoryExecutor";
     
     @Bean(name = CODE_BOX_EXECUTOR)
-    public Executor codeBoxInputExecutor() {
+    public ExecutorService codeBoxInputExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //实现优雅停机，使线程池内任务执行完毕在停机
         executor.setWaitForTasksToCompleteOnShutdown(true);
@@ -43,7 +43,7 @@ public class ThreadPoolConfig {
         //满了调用线程执行，认为重要任务
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
-        return executor;
+        return executor.getThreadPoolExecutor();
     }
 
 

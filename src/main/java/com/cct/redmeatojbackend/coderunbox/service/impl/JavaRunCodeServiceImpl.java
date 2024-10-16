@@ -28,10 +28,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.cct.redmeatojbackend.common.thread.ThreadPoolConfig.CODE_BOX_EXECUTOR;
@@ -48,7 +45,7 @@ import static com.cct.redmeatojbackend.common.thread.ThreadPoolConfig.CODE_BOX_M
 public class JavaRunCodeServiceImpl implements RunCodeService {
 
     @Resource(name = CODE_BOX_EXECUTOR)
-    private Executor executor;
+    private ExecutorService executor;
 
     @Resource(name = CODE_BOX_MONITOR_MEMORY_EXECUTOR)
     private ScheduledThreadPoolExecutor scheduledExecutor;
@@ -139,18 +136,11 @@ public class JavaRunCodeServiceImpl implements RunCodeService {
             });
 
             //收集进程正常输出内容
-            StringBuilder tmpNormalOutput = new StringBuilder();
-            executor.execute(() -> {
-                tmpNormalOutput.append(IoUtil.readUtf8(inputStream));
-            });
+            Future<String> normalOutputFuture = executor.submit(() -> IoUtil.readUtf8(inputStream));
 
 
             //收集进程异常输出内容
-            StringBuilder tmpErrorOutput = new StringBuilder();
-            executor.execute(() -> {
-                tmpErrorOutput.append(IoUtil.readUtf8(errorStream));
-            });
-
+            Future<String> errorOutputFuture = executor.submit(() -> IoUtil.readUtf8(errorStream));
 
             //设置进程最长时间，等待其运行结束
             boolean finished = false;
@@ -177,13 +167,23 @@ public class JavaRunCodeServiceImpl implements RunCodeService {
                 return runCodeResp;
             }
 
+
+            //获取进程运行结果
+            String tmpNormalOutput ;
+            String tmpErrorOutput ;
+            try {
+                tmpNormalOutput= normalOutputFuture.get();
+                tmpErrorOutput = errorOutputFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+
             //如果有错误输出,即运行失败
             if (tmpErrorOutput.length() > 0) {
-                String errStr = tmpErrorOutput.toString();
-                runCodeResp.getOutputContexts().add(errStr);
+                runCodeResp.getOutputContexts().add(tmpErrorOutput);
 
                 //判断是否是内存溢出错误
-                if (StrUtil.startWith(errStr, STACK_OVERFLOW_ERROR) || StrUtil.startWith(errStr, OUT_OF_MEMORY_ERROR)) {
+                if (StrUtil.startWith(tmpErrorOutput, STACK_OVERFLOW_ERROR) || StrUtil.startWith(tmpErrorOutput, OUT_OF_MEMORY_ERROR)) {
                     runCodeResp.setResult(JudgeResultEnum.MEMORY_OUT.getDesc());
                     runCodeResp.setCode(JudgeResultEnum.MEMORY_OUT.getCode());
                     //返回前删除临时文件
@@ -200,7 +200,7 @@ public class JavaRunCodeServiceImpl implements RunCodeService {
             }
 
             //4.正常运行结束返回
-            runCodeResp.getOutputContexts().add(tmpNormalOutput.toString());
+            runCodeResp.getOutputContexts().add(tmpNormalOutput);
             int v = (int) (maxMem.get() / 1024);
             if (v > maxMemoryConsume) {
                 runCodeResp.setMemoryConsume(v);
@@ -211,7 +211,7 @@ public class JavaRunCodeServiceImpl implements RunCodeService {
 
             //5.判断运行结果是否正确
             //代码正常运行结束，判断输出是否正确
-            if (!Objects.equals(tmpNormalOutput.toString(), testCase.getOutputContent())) {
+            if (!Objects.equals(tmpNormalOutput, testCase.getOutputContent())) {
                 runCodeResp.setResult(JudgeResultEnum.ANSWER_ERROR.getDesc());
                 runCodeResp.setCode(JudgeResultEnum.ANSWER_ERROR.getCode());
                 //返回前删除临时文件
@@ -242,14 +242,11 @@ public class JavaRunCodeServiceImpl implements RunCodeService {
             InputStream errorStream = process.getErrorStream();
 
             //使用收集进程异常输出内容，防止阻塞
-            StringBuilder tmpErrorOutput = new StringBuilder();
-            executor.execute(() -> {
-                tmpErrorOutput.append(IoUtil.readUtf8(errorStream));
-            });
+            Future<String> errorOutputFuture = executor.submit(() -> IoUtil.readUtf8(errorStream));
 
             // 等待进程执行完成，并设置超时时间
             boolean timeOut = process.waitFor(1, TimeUnit.MINUTES);
-
+            String tmpErrorOutput = errorOutputFuture.get();
             // 如果有错误输出，即编译失败
             if (tmpErrorOutput.length() > 0) {
                 runCodeResp.getOutputContexts().add(tmpErrorOutput.toString());
@@ -266,7 +263,7 @@ public class JavaRunCodeServiceImpl implements RunCodeService {
                 throw new BusinessException(RespCodeEnum.SYSTEM_ERROR, "代码编译超时");
             }
 
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             //返回前删除临时文件
             FileUtil.del(FileUtil.getParent(saveTmpFilePath, 1));
             throw new BusinessException(RespCodeEnum.SYSTEM_ERROR, "代码编译失败");

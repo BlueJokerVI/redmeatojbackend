@@ -34,7 +34,7 @@ public class SubmitRecordController {
     @PostMapping("/add")
     @ApiOperation("提交记录添加")
     @Login
-    //@Limit(keyPrefix = "com.cct.redmeatojbackend.question.controller.addSubmitRecord",count = 1,interval = 1)
+    @Limit(keyPrefix = "com.cct.redmeatojbackend.question.controller.addSubmitRecord",count = 1,interval = 1)
     BaseResponse<SubmitRecordVo>  addSubmitRecord(@Valid @RequestBody AddSubmitRecordRequest addSubmitRecordRequest){
         return submitRecordService.addSubmitRecord(addSubmitRecordRequest);
     }
@@ -42,6 +42,7 @@ public class SubmitRecordController {
     @PostMapping("/addMQ")
     @ApiOperation("提交记录添加MQ")
     @Login
+    @Limit(keyPrefix = "com.cct.redmeatojbackend.question.controller.addSubmitRecord",count = 1,interval = 1)
     BaseResponse<Long> addSubmitRecordWithMQ(@Valid @RequestBody AddSubmitRecordRequest addSubmitRecordRequest){
         return submitRecordService.addSubmitRecordWithMQ(addSubmitRecordRequest);
     }
