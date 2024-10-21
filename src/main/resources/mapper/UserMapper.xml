@@ -53,4 +53,16 @@
             </if>
         </where>
     </select>
+    <select id="getUserRank" resultType="com.cct.redmeatojbackend.question.domain.entity.UserRank">
+        select id, account, user_avatar
+        from user where id in
+        <if test="userIds != null and userIds.size() > 0">
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+        <if test="userIds == null or userIds.size() == 0">
+            (NULL)
+        </if>
+</select>
 </mapper>

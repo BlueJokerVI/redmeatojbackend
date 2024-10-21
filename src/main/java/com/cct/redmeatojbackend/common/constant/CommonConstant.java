@@ -26,5 +26,4 @@ public interface CommonConstant {
      */
     String SESSION= "SESSION";
 
-
 }

@@ -29,6 +29,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 import static com.cct.redmeatojbackend.common.constant.CommonConstant.LOGIN_USER_INFO_SESSION_KEY;
 
@@ -96,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
         //用户session信息已存在，则不在存入
         UserVo existed = (UserVo) session.getAttribute(LOGIN_USER_INFO_SESSION_KEY);
-        if (ObjectUtil.isNull(existed)) {
+        if (ObjectUtil.isNull(existed) || !Objects.equals(existed.getId(), user.getId())) {
             session.setAttribute(LOGIN_USER_INFO_SESSION_KEY, UserVo.getVo(user));
         }
         return user;

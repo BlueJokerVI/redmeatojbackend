@@ -24,5 +24,18 @@ public interface QuestionService {
 
     BaseResponse<BasePageResp<QuestionVo>> searchQuestionPage(SearchQuestionListRequest searchQuestionListRequest);
 
+    /**
+     * 题目点赞
+     * @param questionId
+     * @param count
+     * @return
+     */
+    BaseResponse<Long> thumbsQuestion(Long questionId,Long count);
 
+    /**
+     * 获取题目点赞数
+     * @param questionId
+     * @return
+     */
+    BaseResponse<Long> getThumbs(Long questionId);
 }

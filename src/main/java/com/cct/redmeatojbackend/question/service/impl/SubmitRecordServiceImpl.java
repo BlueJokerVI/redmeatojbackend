@@ -10,6 +10,7 @@ import com.cct.redmeatojbackend.coderunbox.domain.RunCodeResp;
 import com.cct.redmeatojbackend.coderunbox.service.RemoteCodeBoxService;
 import com.cct.redmeatojbackend.coderunbox.service.RunCodeServiceManagerChain;
 import com.cct.redmeatojbackend.common.constant.CommonConstant;
+import com.cct.redmeatojbackend.common.domain.enums.JudgeResultEnum;
 import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
@@ -26,9 +27,9 @@ import com.cct.redmeatojbackend.question.domain.dto.submitrecord.UpdateSubmitRec
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import com.cct.redmeatojbackend.question.domain.entity.SubmitRecord;
 import com.cct.redmeatojbackend.question.domain.entity.TestCase;
-import com.cct.redmeatojbackend.common.domain.enums.JudgeResultEnum;
 import com.cct.redmeatojbackend.question.domain.vo.SubmitRecordVo;
 import com.cct.redmeatojbackend.question.service.QuestionIOService;
+import com.cct.redmeatojbackend.question.service.RankService;
 import com.cct.redmeatojbackend.question.service.SubmitRecordService;
 import com.cct.redmeatojbackend.user.service.UserService;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -40,8 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static com.cct.redmeatojbackend.common.constant.MQConstant.QUESTION_SUBMIT_TOPIC;
 
@@ -76,6 +75,9 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
     @Resource
     private RocketMQTemplate rocketMQTemplate;
 
+    @Resource
+    private RankService rankService;
+
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public BaseResponse<SubmitRecordVo> addSubmitRecord(AddSubmitRecordRequest addSubmitRecordRequest) {
@@ -102,7 +104,7 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
                 .build();
 
         BaseResponse<RunCodeResp> response = remoteCodeBoxService.run(runCodeReq);
-        if(response.getCode()!=RespCodeEnum.SUCCESS.getCode()){
+        if (response.getCode() != RespCodeEnum.SUCCESS.getCode()) {
             throw new BusinessException(RespCodeEnum.OPERATION_ERROR, response.getMessage());
         }
 //        RunCodeResp runCodeResp = runCodeServiceManagerChain.runCode(runCodeReq);
@@ -122,7 +124,9 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
         if (submitRecord.getJudgeResult() == JudgeResultEnum.SUCCESS.getCode()) {
             //增加题目ac 与 提交次数
             ThrowUtils.throwIf(!questionDao.addQuestionSubmitNumAndAcNum(questionId), RespCodeEnum.OPERATION_ERROR, "更新题目提交次数失败");
-        }else{
+            // 每日用户做题排行榜功能中，添加用户做题数
+            rankService.addSubmitNum(submitRecord.getUserId());
+        } else {
             //增加题目提交次数
             ThrowUtils.throwIf(!questionDao.addQuestionSubmitNum(questionId), RespCodeEnum.OPERATION_ERROR, "更新题目提交次数失败");
         }
@@ -201,7 +205,7 @@ public class SubmitRecordServiceImpl implements SubmitRecordService {
 
         //5.将运行代码请求放入mq
         Message<RunCodeReq> build = MessageBuilder.withPayload(runCodeReq).build();
-        rocketMQTemplate.send(QUESTION_SUBMIT_TOPIC,build);
+        rocketMQTemplate.send(QUESTION_SUBMIT_TOPIC, build);
 
         //6.保存提交记录，并设置该记录正在Wait
 

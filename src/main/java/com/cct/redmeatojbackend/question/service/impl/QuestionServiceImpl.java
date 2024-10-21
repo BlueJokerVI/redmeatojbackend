@@ -11,6 +11,7 @@ import com.cct.redmeatojbackend.common.domain.enums.RespCodeEnum;
 import com.cct.redmeatojbackend.common.domain.vo.BasePageResp;
 import com.cct.redmeatojbackend.common.domain.vo.BaseResponse;
 import com.cct.redmeatojbackend.common.exception.BusinessException;
+import com.cct.redmeatojbackend.common.utils.RedisUtils;
 import com.cct.redmeatojbackend.common.utils.RespUtils;
 import com.cct.redmeatojbackend.common.utils.ThrowUtils;
 import com.cct.redmeatojbackend.question.dao.QuestionDao;
@@ -30,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.cct.redmeatojbackend.common.constant.RedisConstant.THUMBS_UP_KEY_PREFIX;
 
 /**
  * @author cct
@@ -140,6 +143,24 @@ public class QuestionServiceImpl implements QuestionService {
         Page<Question> questionPage = questionMapper.selectPage(searchQuestionListRequest.plusPage(), wrapper);
         BasePageResp<Question> basePageResp = BasePageResp.init(questionPage);
         return RespUtils.success(basePageResp.toVo(basePageResp, QuestionVo.class));
+    }
+
+    @Override
+    public BaseResponse<Long> thumbsQuestion(Long questionId, Long count) {
+
+        String key = THUMBS_UP_KEY_PREFIX + questionId;
+        Long inc = RedisUtils.inc(key, count);
+        return RespUtils.success(inc);
+    }
+
+    @Override
+    public BaseResponse<Long> getThumbs(Long questionId) {
+        String key = THUMBS_UP_KEY_PREFIX + questionId;
+        Long thumbs = RedisUtils.get(key, Long.class);
+        if (thumbs == null) {
+            thumbs = 0L;
+        }
+        return RespUtils.success(thumbs);
     }
 
 

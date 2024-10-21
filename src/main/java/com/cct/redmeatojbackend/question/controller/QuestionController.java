@@ -97,4 +97,22 @@ public class QuestionController {
         return RespUtils.success();
     }
 
+    @GetMapping("/thumbsUp")
+    @ApiOperation("题目点赞")
+    BaseResponse<Long> thumbsUpQuestion(@Valid @NotNull @RequestParam Long questionId, @Valid @NotNull @RequestParam Long count) {
+        return questionService.thumbsQuestion(questionId, count);
+    }
+
+    @GetMapping("/thumbsDown")
+    @ApiOperation("题目点踩")
+    BaseResponse<Long> thumbsDownQuestion(@Valid @NotNull @RequestParam Long questionId, @Valid @NotNull @RequestParam Long count) {
+        return questionService.thumbsQuestion(questionId, -count);
+    }
+
+    @GetMapping("/getThumbs")
+    @ApiOperation("获取题目点赞数")
+    BaseResponse<Long> thumbsUpQuestion(@Valid @NotNull @RequestParam Long questionId) {
+        return questionService.getThumbs(questionId);
+    }
+
 }

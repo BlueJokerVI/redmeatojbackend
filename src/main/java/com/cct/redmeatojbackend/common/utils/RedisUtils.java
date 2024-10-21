@@ -35,10 +35,27 @@ public class RedisUtils {
                     "  return tonumber(redis.call('INCR',keyPrefxi)) \n" +
                     "end ";
 
+    /**
+     * 无过期自增脚本
+     */
+    private static final String LUA_INCR =
+            "if redis.call('EXISTS', KEYS[1]) == 0 then \n" +
+                    "   redis.call('SET', KEYS[1], ARGV[1]) \n" +
+                    "   return tonumber(ARGV[1]) \n" +
+                    "else \n" +
+                    "   return redis.call('INCRBY', KEYS[1], ARGV[1]) \n" +
+                    "end";
+
     public static Long inc(String key, int time, TimeUnit unit) {
         RedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_INCR_EXPIRE, Long.class);
         return stringRedisTemplate.execute(redisScript, Collections.singletonList(key), String.valueOf(unit.toSeconds(time)));
     }
+
+    public static Long inc(String key, Long count) {
+        RedisScript<Long> redisScript = new DefaultRedisScript<>(LUA_INCR, Long.class);
+        return stringRedisTemplate.execute(redisScript, Collections.singletonList(key),  String.valueOf(count));
+    }
+
 
     /**
      * 自增int
