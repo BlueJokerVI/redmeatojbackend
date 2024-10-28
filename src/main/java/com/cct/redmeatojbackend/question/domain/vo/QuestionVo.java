@@ -19,7 +19,6 @@ import java.util.List;
 * @author cct
 */
 @Data
-@ApiModel("题目视图")
 public class QuestionVo implements Serializable {
 
     @ApiModelProperty("题目id")

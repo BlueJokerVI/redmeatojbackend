@@ -14,7 +14,6 @@ import java.io.Serializable;
  * @Description: 用户登入后返回用户Vo
  */
 @Data
-@ApiModel("用户视图")
 public class UserVo implements Serializable {
 
     private static final long serialVersionUID = 1369922972471506342L;
