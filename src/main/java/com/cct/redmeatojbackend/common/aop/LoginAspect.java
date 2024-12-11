@@ -28,7 +28,7 @@ public class LoginAspect {
     @Around("@annotation(login)")
     public Object login(ProceedingJoinPoint joinPoint, Login login) throws Throwable {
         boolean allow = login.allow();
-        if (!allow) {
+        if (allow) {
             UserVo currentUser = userService.getCurrentUser();
             ThrowUtils.throwIf(currentUser == null, RespCodeEnum.NOT_LOGIN_ERROR);
         }
