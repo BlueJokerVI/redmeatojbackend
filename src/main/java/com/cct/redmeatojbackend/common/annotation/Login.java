@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Login {
     /**
-     * 标记未登入是否允许请求接口
+     * true表示登入才能访问
      * @return
      */
     boolean allow() default true;

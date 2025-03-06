@@ -2,6 +2,8 @@ package com.cct.generator;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileWriter;
+import com.cct.redmeatojbackend.post.domain.entity.Comment;
+import com.cct.redmeatojbackend.post.domain.entity.Post;
 import com.cct.redmeatojbackend.question.domain.entity.Question;
 import com.cct.redmeatojbackend.question.domain.entity.SubmitRecord;
 import freemarker.template.Configuration;
@@ -26,14 +28,14 @@ public class Generator {
 
 
         DataModel dataModel = new DataModel();
-        dataModel.setModelName("SubmitRecord");
-        Class<SubmitRecord> Clazz = SubmitRecord.class;
+        dataModel.setModelName("Comment");
+        Class<Comment> Clazz = Comment.class;
         dataModel.setAuthor("cct");
-        dataModel.setModelDesc("提交记录表");
-        dataModel.setModuleClassPath("com.cct.redmeatojbackend.question");
+        dataModel.setModelDesc("评论表");
+        dataModel.setModuleClassPath("com.cct.redmeatojbackend.post");
         dataModel.setProjectPath("com.cct.redmeatojbackend");
         String inputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\resources\\templates";
-        String outputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\java\\com\\cct\\redmeatojbackend\\question";
+        String outputPathDir = "E:\\012_redMeat_OJ\\redmeatojbackend\\src\\main\\java\\com\\cct\\redmeatojbackend\\post";
 
         Field[] fields = Clazz.getDeclaredFields();
         List<DataModel.Field> fieldArrayList = new ArrayList<>();
